@@ -1,0 +1,81 @@
+@import '../../../styles/common';
+
+.container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background-color: $ms-color-neutralLighterAlt;
+}
+
+.head {
+  line-height: 30px;
+  height: 30px;
+  padding-left: 10px;
+  font-size: 12px;
+  background-color: $ms-color-neutralLight;
+}
+
+.title {
+  float: left;
+  font-size: 14px;
+}
+
+.tools {
+  float: right;
+  height: inherit;
+  cursor: pointer;
+}
+
+.toolsIcon {
+  height: inherit;
+  padding: 0 5px;
+}
+
+.toolList {
+  margin: 20px 2px 40px 2px;
+  height: 96%;
+  overflow: auto;
+}
+
+.toolListItem {
+  padding: 4px 4px 4px 12px;
+  margin-bottom: 2px;
+  display: flex;
+  position: relative;
+  &:hover {
+    background-color: $ms-color-neutralLight;
+    cursor: pointer;
+  }
+
+  &:hover .toolListItem-operationBtn {
+    display: inline;
+  }
+  // -moz-user-select: none;
+  // -webkit-user-select: none;
+  // -ms-user-select: none;
+  // -khtml-user-select: none;
+  // user-select: none;
+}
+
+.toolListItem-itemImage {
+  flex-shrink: 0;
+}
+
+.toolListItem-name {
+  @include ms-font-l;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0 0 0 10px;
+}
+
+.toolListItem-operationBtn {
+  display: none;
+  position: absolute;
+  height: inherit;
+  margin-right: 10px;
+  right: 0;
+}

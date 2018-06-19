@@ -1,0 +1,52 @@
+@import '../../styles/common';
+
+.projectListContainer {
+  &-container {
+    height: inherit;
+    overflow: auto;
+  }
+
+  &-itemCell {
+    @include focus-border();
+    cursor: pointer;
+    min-height: 54px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-bottom: 1px solid $bodyDividerColor;
+    display: flex;
+    &:hover {
+      background-color: $ms-color-neutralLighter;
+    }
+  }
+
+  &-itemImage {
+    flex-shrink: 0;
+  }
+
+  &-itemContent {
+    @include margin-left(10px);
+    overflow: hidden;
+    flex-grow: 1;
+  }
+
+  &-itemName {
+    @include ms-font-l;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-itemIndex {
+    font-size: $ms-font-size-s;
+    color: $ms-color-neutralTertiary;
+    margin-bottom: 10px;
+  }
+
+  &-chevron {
+    align-self: center;
+    @include margin-left(10px);
+    color: $ms-color-neutralTertiary;
+    font-size: $ms-font-size-l;
+    flex-shrink: 0;
+  }
+}

@@ -1,0 +1,117 @@
+import * as React from 'react';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+
+import { OverflowSet, IOverflowSetItemProps } from 'office-ui-fabric-react/lib/OverflowSet';
+import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
+import classnames from 'classnames';
+import { SplitPane, Pane } from 'vpt-components';
+import ToolBox from './ToolsBox';
+import ProjectExplorer from './ProjectExplorer';
+import PageControl from '../pagecontrol/PageControl';
+import Dependencies from './Dependencies';
+
+import { showme as openProjectSelector } from '../selectproject/redux/actions';
+import { IProjectControlInitState } from './redux/initialState';
+import { IProjectInfo } from '../../common/types';
+const styles = require('./styles/ProjectControl.scss');
+
+export interface IProjectControlProps {
+  projectControl: IProjectControlInitState;
+  componentRef?: (component: ProjectControl | null) => void;
+  actions: any;
+}
+
+export interface IProjectControlState {
+  curTabkey: string;
+}
+
+class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControlState> {
+  constructor(props: IProjectControlProps) {
+    super(props);
+    this._onRenterTabItem = this._onRenterTabItem.bind(this);
+    this.state = {
+      curTabkey: 'toolbox'
+    };
+  }
+
+  public componentDidMount() {
+    let { projectInfo } = this.props.projectControl;
+    let { openProjectSelector } = this.props.actions;
+    if (!projectInfo) {
+      openProjectSelector(true);
+    }
+  }
+
+  public render() {
+    let { projectInfo } = this.props.projectControl;
+    return (
+      <SplitPane split="vertical">
+        <Pane initialSize="250px" minSize="220px">
+          <div className={styles.root}>
+            <div className={styles.controlPanel}>
+              <OverflowSet
+                items={[
+                  { key: 'projectExplorer', name: '项目结构' },
+                  { key: 'toolbox', name: '工具栏' },
+                  { key: 'dependencies', name: '项目依赖' }
+                ]}
+                onRenderItem={this._onRenterTabItem}
+                vertical
+              />
+            </div>
+            {projectInfo && this._renderViewPanel(projectInfo)}
+          </div>
+        </Pane>
+        <Pane>
+          projectInfo && <PageControl />
+        </Pane>
+      </SplitPane>
+    );
+  }
+
+  private _renderViewPanel(projectInfo: IProjectInfo): JSX.Element {
+    let { curTabkey } = this.state;
+    return (
+      <div className={styles.viewPanel}>
+        <div className={styles.viewPanel_content}>
+          {curTabkey == 'projectExplorer' && <ProjectExplorer />}
+          {curTabkey == 'toolbox' && <ToolBox items={projectInfo.components} />}
+          {curTabkey == 'dependencies' && <Dependencies items={projectInfo.dependencies} />}
+        </div>
+      </div>
+    );
+  }
+
+  private _onRenterTabItem(item: IOverflowSetItemProps): JSX.Element {
+    let { curTabkey } = this.state;
+    let cx = classnames(styles.controlTab, {
+      [styles.contrrolTab_active]: item.key == curTabkey
+    });
+    return (
+      <div className={cx} onClick={this._tabsClickHandle.bind(this, item.key)}>
+        {item.name}
+      </div>
+    );
+  }
+
+  _tabsClickHandle(tabKey: string) {
+    this.setState({ curTabkey: tabKey });
+  }
+}
+
+function mapStateToProps(state: any) {
+  return {
+    projectControl: state.projectControl as IProjectControlInitState
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    actions: bindActionCreators({ openProjectSelector }, dispatch)
+  };
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectControl);
