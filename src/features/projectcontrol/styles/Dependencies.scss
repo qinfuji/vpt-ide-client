@@ -1,0 +1,52 @@
+@import '../../../styles/common';
+
+.container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.dependList {
+  height: 100%;
+  position: relative;
+}
+
+.dependListHead {
+  line-height: 30px;
+  height: 30px;
+  padding-left: 10px;
+  font-size: 12px;
+  background-color: $ms-color-neutralLight;
+}
+
+.dependListAdd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 40px;
+}
+
+.dependListContent {
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.operationBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-between;
+  width: 40px;
+}
+
+.detaillist {
+  font-size: $ms-font-size-m-plus;
+}

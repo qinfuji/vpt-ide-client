@@ -3,12 +3,9 @@ import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TooltipHost, TooltipDelay } from 'office-ui-fabric-react/lib/Tooltip';
 import { List } from 'office-ui-fabric-react/lib/List';
-//import { GroupedList } from 'office-ui-fabric-react/lib/GroupedList';
 import { Image, ImageFit } from 'office-ui-fabric-react/lib/Image';
 import { DirectionalHint } from 'office-ui-fabric-react/lib/common/DirectionalHint';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
-//import { DetailsList } from 'office-ui-fabric-react/lib/DetailsList';
-//import { DragDropHelper } from 'office-ui-fabric-react/lib/utilities/dragdrop';
 import * as styles from './styles/ToolsBox.scss';
 import { IProjectComponent } from '../../common/types';
 
@@ -32,14 +29,6 @@ class ToolsBox extends BaseComponent<IToolsBoxProps> implements IToolsBox {
 
     let { items } = props;
     this._selection.setItems(items);
-  }
-
-  private _getEventMap() {
-    return {
-      dragend: () => {
-        console.log('dragend');
-      }
-    };
   }
 
   private _select(item: IProjectComponent, index: number) {
@@ -72,9 +61,9 @@ class ToolsBox extends BaseComponent<IToolsBoxProps> implements IToolsBox {
   private _renderToolList() {
     let { items } = this.props;
     return (
-      // <SelectionZone onItemInvoked={this._select.bind(this)} selection={this._selection}>
-      <List items={items} onRenderCell={this._onRenderCell.bind(this)} />
-      // </SelectionZone>
+      <SelectionZone onItemInvoked={this._select.bind(this)} selection={this._selection}>
+        <List items={items} onRenderCell={this._onRenderCell.bind(this)} />
+      </SelectionZone>
     );
   }
 

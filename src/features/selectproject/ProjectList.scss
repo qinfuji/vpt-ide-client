@@ -3,7 +3,8 @@
 .projectListContainer {
   &-container {
     height: inherit;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   &-itemCell {
@@ -22,31 +23,8 @@
   &-itemImage {
     flex-shrink: 0;
   }
+}
 
-  &-itemContent {
-    @include margin-left(10px);
-    overflow: hidden;
-    flex-grow: 1;
-  }
-
-  &-itemName {
-    @include ms-font-l;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &-itemIndex {
-    font-size: $ms-font-size-s;
-    color: $ms-color-neutralTertiary;
-    margin-bottom: 10px;
-  }
-
-  &-chevron {
-    align-self: center;
-    @include margin-left(10px);
-    color: $ms-color-neutralTertiary;
-    font-size: $ms-font-size-l;
-    flex-shrink: 0;
-  }
+.detailslist {
+  font-size: $ms-font-size-m-plus;
 }

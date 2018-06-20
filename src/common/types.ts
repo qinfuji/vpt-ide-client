@@ -13,15 +13,22 @@ export interface IProjectComponent {
   key?: string;
 }
 
-export interface IDependency {
+export interface IProjectDependency {
   /** 模块名称*/
   name: string;
   /** 要求版本 */
   required: string;
   /**安装版本 */
   installed: string;
-  /**最后版本 */
-  latest?: string;
+  /**最新版本 */
+  latest: string;
+  /**仓库地址 */
+  repo: string;
+}
+
+export interface IProjectDependencies {
+  dependencies: IProjectDependency[];
+  devDependencies: IProjectDependency[];
 }
 
 export interface IProjectBaseInfo {
@@ -85,7 +92,7 @@ export interface IProjectInfo {
   /**可视化组件列表 */
   components: IProjectComponent[];
   /** 依赖列表 */
-  dependencies: IDependency[];
+  dependencies: IProjectDependencies;
   /** 项目结构 */
   structure: IProjectStructure;
 }

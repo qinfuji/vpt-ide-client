@@ -44,7 +44,7 @@ class SelectProject extends BaseComponent<ISelectProjectProps> implements ISelec
           }}
           onDismiss={this._close.bind(this)}
         >
-          <div className={styles.projectList}>
+          <div className={styles.projectListContainer}>
             {FETCH_PROJECTS_BEGIN == fetchProjectsStatus && this._renderSpinner()}
             {FETCH_PROJECTS_SUCCESS == fetchProjectsStatus && projects && this._renderProjectList(projects)}
             {FETCH_PROJECTS_FAILURE == fetchProjectsStatus && this._renderSpinner()}
@@ -91,7 +91,7 @@ class SelectProject extends BaseComponent<ISelectProjectProps> implements ISelec
   private _renderErrMessage() {
     <div>
       <MessageBar dismissButtonAriaLabel="Close" isMultiline={false} messageBarType={MessageBarType.error}>
-        加载项目失败，请重新加载
+        加载项目失败，请重新加载!
       </MessageBar>
     </div>;
   }

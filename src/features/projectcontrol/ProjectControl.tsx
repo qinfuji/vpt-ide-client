@@ -31,7 +31,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     super(props);
     this._onRenterTabItem = this._onRenterTabItem.bind(this);
     this.state = {
-      curTabkey: 'toolbox'
+      curTabkey: 'dependencies'
     };
   }
 
@@ -47,7 +47,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     let { projectInfo } = this.props.projectControl;
     return (
       <SplitPane split="vertical">
-        <Pane initialSize="250px" minSize="220px">
+        <Pane initialSize="300px" minSize="220px">
           <div className={styles.root}>
             <div className={styles.controlPanel}>
               <OverflowSet
@@ -63,9 +63,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
             {projectInfo && this._renderViewPanel(projectInfo)}
           </div>
         </Pane>
-        <Pane>
-          projectInfo && <PageControl />
-        </Pane>
+        <Pane>{projectInfo && <PageControl />}</Pane>
       </SplitPane>
     );
   }
