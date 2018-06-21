@@ -1,0 +1,35 @@
+@import '../../../styles/common';
+
+.root {
+  width: 100%;
+  height: inherit;
+  margin: 1px 0;
+  cursor: pointer;
+}
+
+.head {
+  line-height: 30px;
+  height: 30px;
+  padding-left: 10px;
+  font-size: 0.9rem;
+  background-color: $ms-color-neutralLight;
+  display: flex;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.toolbar {
+  margin-right: 5px;
+}
+
+.toolbarIcon {
+  margin: 0 12px 0 0;
+}
+
+.content {
+  max-height: 60%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

@@ -50,37 +50,51 @@ export interface IProjectBaseInfo {
   id: string;
 }
 
-export enum IPageType {
-  PAGE,
-  DIR,
-  WIDGET,
-  DIALOG
+export enum IFileType {
+  'PAGE',
+  'DIR',
+  'WIDGET',
+  'DIALOG',
+  'LIB',
+  'DATA',
+  'ACTION',
+  'COMPONENT'
 }
 
-export interface IPage {
+export interface IFile {
   /**名称 */
   name: string;
   /**显示名称 */
   label: string;
-  /**图标 */
-  icon?: string;
   /**子页面 ， 当是目录的情况下存在 */
-  children: IPage[];
+  children: IFile[];
   /**路径 */
   path: string;
   /**文件类型 */
-  type: IPageType;
+  type: IFileType;
+  /**是否是首页 */
+  isIndex?: boolean;
+}
+
+export enum LayoutType {
+  'None',
+  'LEFTRIGTH',
+  'TOPBOTTOM'
 }
 
 export interface IProjectStructure {
   /** 项目页面 */
-  pages: IPage[];
+  pages: IFile[];
   /** 项目布局信息 */
-  layout: string;
+  layouts: string;
+  /**登录页 */
+  login: string;
   /** 项目首页信息 */
-  index: IPage;
+  index: IFile;
   /** 错误页面 */
-  errors: IPage[];
+  errors: IFile[];
+  /**通用文件 */
+  commons: IFile[];
 }
 
 /**

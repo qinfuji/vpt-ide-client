@@ -14,7 +14,7 @@ import Dependencies from './Dependencies';
 import { showme as openProjectSelector } from '../selectproject/redux/actions';
 import { IProjectControlInitState } from './redux/initialState';
 import { IProjectInfo } from '../../common/types';
-const styles = require('./styles/ProjectControl.scss');
+import * as styles from './styles/ProjectControl.scss';
 
 export interface IProjectControlProps {
   projectControl: IProjectControlInitState;
@@ -31,7 +31,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     super(props);
     this._onRenterTabItem = this._onRenterTabItem.bind(this);
     this.state = {
-      curTabkey: 'dependencies'
+      curTabkey: 'projectExplorer'
     };
   }
 
@@ -52,12 +52,11 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
             <div className={styles.controlPanel}>
               <OverflowSet
                 items={[
-                  { key: 'projectExplorer', name: '项目结构' },
-                  { key: 'toolbox', name: '工具栏' },
+                  { key: 'projectExplorer', name: '资源管理器' },
+                  { key: 'toolbox', name: '工具箱' },
                   { key: 'dependencies', name: '项目依赖' }
                 ]}
                 onRenderItem={this._onRenterTabItem}
-                vertical
               />
             </div>
             {projectInfo && this._renderViewPanel(projectInfo)}
@@ -73,7 +72,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     return (
       <div className={styles.viewPanel}>
         <div className={styles.viewPanel_content}>
-          {curTabkey == 'projectExplorer' && <ProjectExplorer />}
+          {curTabkey == 'projectExplorer' && <ProjectExplorer structure={projectInfo.structure} />}
           {curTabkey == 'toolbox' && <ToolBox items={projectInfo.components} />}
           {curTabkey == 'dependencies' && <Dependencies items={projectInfo.dependencies} />}
         </div>

@@ -6,12 +6,10 @@
 }
 
 .controlPanel {
-  position: absolute;
   width: 30px;
-  //bottom: 0px;
   top: 0px;
   cursor: pointer;
-  //border-bottom: 1px solid rgb(74, 73, 73);
+  transform: rotate(90deg);
 }
 
 .viewPanel {
@@ -35,17 +33,19 @@
 .controlTab {
   font-size: 14px;
   font-weight: 400;
-  padding: 8px 2px;
-  width: 26px;
+  padding: 8px 8px;
   margin: 0 auto;
   text-align: center;
   line-height: 16px;
-
+  transform: rotate(180deg);
+  color: $ms-color-neutralSecondaryAlt;
   &:hover {
     background-color: $ms-color-neutralLighterAlt;
+    color: $ms-color-neutralSecondary;
   }
 }
 
 .contrrolTab_active {
   background: $ms-color-neutralLighterAlt;
+  color: $ms-color-neutralSecondary;
 }
