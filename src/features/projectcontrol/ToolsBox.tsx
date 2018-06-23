@@ -6,6 +6,7 @@ import { List } from 'office-ui-fabric-react/lib/List';
 import { Image, ImageFit } from 'office-ui-fabric-react/lib/Image';
 import { DirectionalHint } from 'office-ui-fabric-react/lib/common/DirectionalHint';
 import { Selection, SelectionMode, SelectionZone } from 'office-ui-fabric-react/lib/Selection';
+
 import * as styles from './styles/ToolsBox.scss';
 import { IProjectComponent } from '../../common/types';
 
@@ -31,38 +32,40 @@ class ToolsBox extends BaseComponent<IToolsBoxProps> implements IToolsBox {
     this._selection.setItems(items);
   }
 
-  private _select(item: IProjectComponent, index: number) {
+  private _select = (item: IProjectComponent, index: number) => {
     console.log('--->', index, item);
-  }
+  };
 
-  private _onRenderCell(item: IProjectComponent, index: number) {
+  private _onRenderCell = (item: IProjectComponent, index: number) => {
     return (
       <div className={styles.toolListItem} data-is-draggable data-selection-index={index} draggable>
         <Image
           className={styles['toolListItem-itemImage']}
-          height={20}
+          height={40}
           imageFit={ImageFit.cover}
           src={item.logo}
-          width={30}
+          width={40}
         />
-        <div className={styles['toolListItem-name']}>{item.name}</div>
+        <div className={styles['toolListItem-name']}>
+          <span>{item.name}</span>
+        </div>
 
         <Icon
           className={styles['toolListItem-operationBtn']}
-          iconName="Settings"
+          iconName="Delete"
           onClick={() => {
             console.log('aaaa');
           }}
         />
       </div>
     );
-  }
+  };
 
   private _renderToolList() {
     let { items } = this.props;
     return (
-      <SelectionZone onItemInvoked={this._select.bind(this)} selection={this._selection}>
-        <List items={items} onRenderCell={this._onRenderCell.bind(this)} />
+      <SelectionZone onItemInvoked={this._select} selection={this._selection}>
+        <List items={items} onRenderCell={this._onRenderCell} />
       </SelectionZone>
     );
   }

@@ -35,18 +35,23 @@
 }
 
 .toolList {
-  margin: 20px 2px 40px 2px;
+  margin: 10px 2px 40px 2px;
   height: 96%;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-align: center;
 }
 
 .toolListItem {
   padding: 4px 4px 4px 12px;
-  margin-bottom: 2px;
-  display: flex;
+  margin: 4px 10px;
+  border-radius: 3px;
   position: relative;
+  @include ms-font-s();
+  color: $ms-color-neutralSecondaryAlt;
   &:hover {
     background-color: $ms-color-neutralLight;
+    color: $ms-color-neutralSecondary;
     cursor: pointer;
   }
 
@@ -57,14 +62,15 @@
 
 .toolListItem-itemImage {
   flex-shrink: 0;
+  margin: 0 auto 10px auto;
+  border-radius: 3px;
 }
 
 .toolListItem-name {
   @include ms-font-l;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0 0 0 10px;
+  text-align: center;
 }
 
 .toolListItem-operationBtn {
@@ -72,5 +78,6 @@
   position: absolute;
   height: inherit;
   margin-right: 10px;
+  top: 10px;
   right: 0;
 }

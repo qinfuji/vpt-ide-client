@@ -18,8 +18,8 @@ if (process.env.NODE_ENV === 'development') {
   const logger = createLogger({ collapsed: true });
   middlewares.push(logger);
 
-  if (window.devToolsExtension) {
-    devToolsExtension = window.devToolsExtension();
+  if ((window as any).devToolsExtension) {
+    devToolsExtension = (window as any).devToolsExtension();
   }
 }
 

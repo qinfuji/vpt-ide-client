@@ -3,4 +3,4 @@ import { ITreeProps, ITreeStyleProps, ITreeStyles } from './Tree.types';
 import { TreeBase } from './Tree.base';
 import { getStyles } from './Tree.styles';
 
-export const Nav = styled<INavProps, INavStyleProps, INavStyles>(NavBase, getStyles);
+export const Tree = styled<ITreeProps, ITreeStyleProps, ITreeStyles>(TreeBase, getStyles);

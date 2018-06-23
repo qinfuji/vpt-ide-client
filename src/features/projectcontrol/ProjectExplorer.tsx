@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { IProjectStructure, IFile } from '../../common/types';
-import { List } from 'office-ui-fabric-react/lib/List';
 import Panel from './Panel';
+import { Pane, SplitPane } from 'vpt-components';
 import * as stylesImport from './styles/ProjectExplorer.scss';
+import { Tree, ITreeItem } from '../common/tree';
 const styles: any = stylesImport;
 
 console.log(styles);
@@ -22,14 +23,11 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
     let { structure } = this.props;
     return (
       <div className={styles.root}>
-        {structure &&
-          structure.layouts && (
-            <Panel title="LAYOUT" toolbtns={[{ icon: 'PageAdd', key: 'layoutPageAdd' }]}>
-              {this._renderLayout()}
-            </Panel>
-          )}
-        {structure &&
-          structure.pages && (
+        <SplitPane split="horizontal">
+          <Pane initialSize="15%">
+            <Panel title="LAYOUT">{this._renderLayout()}</Panel>
+          </Pane>
+          <Pane initialSize="40%">
             <Panel
               title="PAGES"
               toolbtns={[
@@ -40,9 +38,8 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
             >
               {this._renderPages(structure.pages)}
             </Panel>
-          )}
-        {structure &&
-          structure.commons && (
+          </Pane>
+          <Pane initialSize="40%">
             <Panel
               title="COMMONS"
               toolbtns={[
@@ -53,7 +50,8 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
             >
               Common
             </Panel>
-          )}
+          </Pane>
+        </SplitPane>
       </div>
     );
   }
@@ -63,12 +61,13 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
   }
 
   private _renderPages(pages: IFile[]): JSX.Element | null {
-    return <List items={pages} onRenderCell={this._renderPageCell} />;
+    console.log(pages);
+    return <Tree items={pages as ITreeItem[]} onRenderItem={this._renderTreeNode} />;
   }
 
-  private _renderPageCell(item, index) {
-    return <div>aaa</div>;
-  }
+  private _renderTreeNode = (item: ITreeItem): React.ReactNode => {
+    return <div>111</div>;
+  };
 }
 
 export default ProjectExplorer;
