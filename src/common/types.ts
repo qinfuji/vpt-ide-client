@@ -62,12 +62,13 @@ export enum IFileType {
 }
 
 export interface IFile {
+  id: string;
   /**名称 */
   name: string;
   /**显示名称 */
   label: string;
   /**子页面 ， 当是目录的情况下存在 */
-  children: IFile[];
+  parent: IFile[];
   /**路径 */
   path: string;
   /**文件类型 */

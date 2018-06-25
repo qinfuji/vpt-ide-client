@@ -73,7 +73,7 @@ class SelectProject extends BaseComponent<ISelectProjectProps> implements ISelec
     try {
       await select(item.id);
       showme(false);
-      changeProject(item);
+      changeProject(item.id);
     } catch (err) {
       //TODO 这里需要处理异常情况
       console.log(err);

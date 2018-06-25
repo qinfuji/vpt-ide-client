@@ -11,6 +11,10 @@ module.exports = resources.createServeConfig({
         changeOrigin: true,
         context: ['/projects'],
         target: 'http://localhost:3000/mock/11'
+      },
+      {
+        changeOrigin: true,
+        context: ['/projects/sss']
       }
     ]
   },

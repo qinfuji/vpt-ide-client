@@ -1,22 +1,26 @@
 import { IStyle, ITheme } from 'office-ui-fabric-react/lib/Styling';
 import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
+import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 export interface ITree {}
 
 export interface ITreeItem {
-  children?: ITreeItem[];
   [key: string]: any;
-  isCollapse?: boolean;
 }
 
-export enum TreeSelectMode {
-  'None',
-  'Single',
-  'Multi'
+export interface ITreeMode<T extends ITreeItem> {
+  isLeaf: (item: T) => boolean;
+  getItem: (index: number) => ITreeItem;
+  getItemIndex: (item: T) => number;
+  getRoot: () => T[];
+  getChild: (parent: T) => T[];
+  isExpanded: (item: T) => boolean;
+  setItems: (items: ITreeItem[]) => void;
+  getId: (item: ITreeItem) => string | number;
 }
 
 export interface ITreeProps {
-  items?: ITreeItem[];
-  getChildren?: (item: ITreeItem) => ITreeItem[] | null;
+  items: ITreeItem[];
+  getMode?: () => ITreeMode<ITreeItem>;
   componentRef?: (ref: ITree | null) => void | ITree;
   onRenderItem: (item: ITreeItem) => React.ReactNode;
   initialSelectedKey?: string;
@@ -25,10 +29,11 @@ export interface ITreeProps {
   theme?: ITheme;
   styles?: IStyleFunctionOrObject<ITreeStyleProps, ITreeStyles>;
   visualCheckbox?: boolean;
-  selectMode?: TreeSelectMode;
+  selectMode?: SelectionMode;
   onSelectChange?: (items: ITreeItem[] | ITreeItem) => void;
   onClick?: (item: ITreeItem) => void;
   onInvoke?: (item: ITreeItem) => void;
+  onLinkExpandClick?: (ev?: React.MouseEvent<HTMLElement>, item?: ITreeItem) => void;
 }
 
 export interface ITreeStyleProps {
@@ -40,4 +45,9 @@ export interface ITreeStyles {
   root: IStyle;
   treeNode: IStyle;
   treeGroup: IStyle;
+  nodeSpace: IStyle;
+  nodeArrow: IStyle;
+  nodeCheckbox: IStyle;
+  checkboxField: IStyle;
+  nodeContent: IStyle;
 }

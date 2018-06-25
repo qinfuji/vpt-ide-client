@@ -1,8 +1,7 @@
-import { FetchProjectDataStatus } from './fetchProjectData';
 import { IProjectInfo } from '../../../common/types';
 
 export interface IProjectControlInitState {
-  fetchProjectDataStatus: FetchProjectDataStatus | undefined | null;
+  fetchProjectDataStatus: string | null;
   projectInfo: IProjectInfo | undefined | null;
 }
 
