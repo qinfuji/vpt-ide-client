@@ -43,4 +43,14 @@ export class DefaultTreeMode implements ITreeMode<IFlatTreeItem> {
   getId(item: IFlatTreeItem): string | number {
     return item.id;
   }
+
+  getParent(item: IFlatTreeItem): IFlatTreeItem | null {
+    for (let index = 0; index < this._items.length; index++) {
+      const element = this._items[index];
+      if (element.id === item.parentId) {
+        return element;
+      }
+    }
+    return null;
+  }
 }

@@ -95,7 +95,7 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
         items={pages as ITreeItem[]}
         onRenderItem={this._renderTreeNode}
         visualCheckbox={true}
-        selectMode={SelectionMode.single}
+        selectionMode={SelectionMode.none}
         onLinkExpandClick={(e, i) => {
           console.log(e, i);
         }}

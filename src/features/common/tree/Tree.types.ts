@@ -16,6 +16,7 @@ export interface ITreeMode<T extends ITreeItem> {
   isExpanded: (item: T) => boolean;
   setItems: (items: ITreeItem[]) => void;
   getId: (item: ITreeItem) => string | number;
+  getParent: (item: ITreeItem) => ITreeItem | null;
 }
 
 export interface ITreeProps {
@@ -29,7 +30,7 @@ export interface ITreeProps {
   theme?: ITheme;
   styles?: IStyleFunctionOrObject<ITreeStyleProps, ITreeStyles>;
   visualCheckbox?: boolean;
-  selectMode?: SelectionMode;
+  selectionMode?: SelectionMode;
   onSelectChange?: (items: ITreeItem[] | ITreeItem) => void;
   onClick?: (item: ITreeItem) => void;
   onItemInvoked?: (item?: ITreeItem) => void;

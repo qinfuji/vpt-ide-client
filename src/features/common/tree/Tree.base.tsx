@@ -25,13 +25,13 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   constructor(props: ITreeProps) {
     super(props);
     this._hasMounted = false;
-    let { items, selectMode = SelectionMode.none, getMode } = this.props;
+    let { items, selectionMode = SelectionMode.none, getMode } = this.props;
     this._treeMode = getMode ? getMode() : (new DefaultTreeMode() as any);
     this.state = {
       selectedKey: props.initialSelectedKey || props.selectedKey || null,
       selection: new Selection({
         getKey: item => (item as ITreeItem).id,
-        selectionMode: selectMode,
+        selectionMode: selectionMode,
         onSelectionChanged: this._onSelectionChanged
       }),
       nodeExpandStates: {}
@@ -51,7 +51,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   }
 
   render() {
-    const { className, theme, styles, selectMode = SelectionMode.none, onItemContextMenu } = this.props;
+    const { className, theme, styles, onItemContextMenu } = this.props;
     const { selection } = this.state;
     const classNames = getClassNames(styles!, {
       theme: theme!,
@@ -59,12 +59,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     });
     let roots = this._treeMode.getRoot();
     return (
-      <SelectionZone
-        selection={selection}
-        selectionMode={selectMode}
-        onItemInvoked={this.onItemInvoked}
-        onItemContextMenu={onItemContextMenu}
-      >
+      <SelectionZone selection={selection} onItemInvoked={this.onItemInvoked} onItemContextMenu={onItemContextMenu}>
         <FocusZone direction={FocusZoneDirection.vertical}>
           <div className={classNames.root}>{this._renderTreeNodes(roots, 0)}</div>
         </FocusZone>
@@ -92,7 +87,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     isLeaf: boolean,
     isExpanded: boolean
   ): React.ReactElement<{}> {
-    const { className, theme, styles, visualCheckbox, onRenderItem } = this.props;
+    const { className, theme, styles, visualCheckbox, onRenderItem, selectionMode } = this.props;
     const { selection } = this.state;
     const classNames = getClassNames(styles!, {
       theme: theme!,
@@ -100,14 +95,14 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     });
     let index = this._treeMode.getItemIndex(item);
     let itemSelected = selection.isIndexSelected(index);
-    console.log(index, item, itemSelected);
     return (
       <div
         key={index}
         className={classNames.treeNode}
+        data-is-focusable={true}
         data-selection-select
         data-selection-index={index}
-        data-selection-toggle
+        data-selection-toggle={true}
       >
         <span className={classNames.nodeSpace} style={{ width: 20 * nestingLevel + 'px', display: 'inline-block' }} />
         <span className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
@@ -133,7 +128,16 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
             )}
         </span>
         <span className={classNames.nodeCheckbox}>
-          {visualCheckbox && <Checkbox styles={{ checkbox: classNames.checkboxField }} checked={itemSelected} />}
+          {visualCheckbox &&
+            selectionMode !== SelectionMode.none && (
+              <Checkbox
+                styles={{ checkbox: classNames.checkboxField }}
+                checked={itemSelected}
+                onChange={(ev, isChecked: boolean) => {
+                  selection.setIndexSelected(index, isChecked, true);
+                }}
+              />
+            )}
         </span>
         <div className={classNames.nodeContent}>{onRenderItem && onRenderItem(item)}</div>
       </div>
