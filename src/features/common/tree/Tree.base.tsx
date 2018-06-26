@@ -20,14 +20,20 @@ export interface ITreeState {
 @customizable('Tree', ['theme'])
 export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements ITree {
   private _treeMode: ITreeMode<ITreeItem>;
+  private _hasMounted = false;
 
   constructor(props: ITreeProps) {
     super(props);
+    this._hasMounted = false;
     let { items, selectMode = SelectionMode.none, getMode } = this.props;
     this._treeMode = getMode ? getMode() : (new DefaultTreeMode() as any);
     this.state = {
       selectedKey: props.initialSelectedKey || props.selectedKey || null,
-      selection: new Selection({ getKey: item => (item as ITreeItem).id, selectionMode: selectMode }),
+      selection: new Selection({
+        getKey: item => (item as ITreeItem).id,
+        selectionMode: selectMode,
+        onSelectionChanged: this._onSelectionChanged
+      }),
       nodeExpandStates: {}
     };
     this.state.selection.setItems(items as IObjectWithKey[]);
@@ -40,8 +46,12 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     }
   }
 
+  public componentDidMount(): void {
+    this._hasMounted = true;
+  }
+
   render() {
-    const { className, theme, styles, selectMode = SelectionMode.none } = this.props;
+    const { className, theme, styles, selectMode = SelectionMode.none, onItemContextMenu } = this.props;
     const { selection } = this.state;
     const classNames = getClassNames(styles!, {
       theme: theme!,
@@ -49,7 +59,12 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     });
     let roots = this._treeMode.getRoot();
     return (
-      <SelectionZone selection={selection} selectionMode={selectMode} onItemInvoked={id => console.log(id)}>
+      <SelectionZone
+        selection={selection}
+        selectionMode={selectMode}
+        onItemInvoked={this.onItemInvoked}
+        onItemContextMenu={onItemContextMenu}
+      >
         <FocusZone direction={FocusZoneDirection.vertical}>
           <div className={classNames.root}>{this._renderTreeNodes(roots, 0)}</div>
         </FocusZone>
@@ -78,13 +93,22 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     isExpanded: boolean
   ): React.ReactElement<{}> {
     const { className, theme, styles, visualCheckbox, onRenderItem } = this.props;
+    const { selection } = this.state;
     const classNames = getClassNames(styles!, {
       theme: theme!,
       className: className
     });
     let index = this._treeMode.getItemIndex(item);
+    let itemSelected = selection.isIndexSelected(index);
+    console.log(index, item, itemSelected);
     return (
-      <div key={index} className={classNames.treeNode} data-selection-select data-selection-index={index}>
+      <div
+        key={index}
+        className={classNames.treeNode}
+        data-selection-select
+        data-selection-index={index}
+        data-selection-toggle
+      >
         <span className={classNames.nodeSpace} style={{ width: 20 * nestingLevel + 'px', display: 'inline-block' }} />
         <span className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
           {isLeaf && (
@@ -109,7 +133,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
             )}
         </span>
         <span className={classNames.nodeCheckbox}>
-          {visualCheckbox && <Checkbox styles={{ checkbox: classNames.checkboxField }} />}
+          {visualCheckbox && <Checkbox styles={{ checkbox: classNames.checkboxField }} checked={itemSelected} />}
         </span>
         <div className={classNames.nodeContent}>{onRenderItem && onRenderItem(item)}</div>
       </div>
@@ -152,9 +176,19 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
       } else {
         this.setState({ nodeExpandStates: { ...this.state.nodeExpandStates, [id]: !curExpandState } });
       }
-
-      ev.preventDefault();
-      ev.stopPropagation();
     }
   }
+
+  private onItemInvoked = (item?: IObjectWithKey, index?: number, ev?: Event) => {
+    let { onItemInvoked } = this.props;
+    if (onItemInvoked) {
+      onItemInvoked(item);
+    }
+  };
+
+  private _onSelectionChanged = (): void => {
+    if (this._hasMounted) {
+      this.forceUpdate();
+    }
+  };
 }

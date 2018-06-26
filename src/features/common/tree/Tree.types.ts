@@ -32,8 +32,9 @@ export interface ITreeProps {
   selectMode?: SelectionMode;
   onSelectChange?: (items: ITreeItem[] | ITreeItem) => void;
   onClick?: (item: ITreeItem) => void;
-  onInvoke?: (item: ITreeItem) => void;
+  onItemInvoked?: (item?: ITreeItem) => void;
   onLinkExpandClick?: (ev?: React.MouseEvent<HTMLElement>, item?: ITreeItem) => void;
+  onItemContextMenu?: (item?: any, index?: number, ev?: Event) => void | boolean;
 }
 
 export interface ITreeStyleProps {
