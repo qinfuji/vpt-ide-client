@@ -6,7 +6,6 @@ import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { ITree, ITreeProps, ITreeItem, ITreeMode, ITreeStyleProps, ITreeStyles } from './Tree.types';
 import { DefaultTreeMode } from './DefaultTreeMode';
 import { SelectionZone, Selection, SelectionMode, IObjectWithKey } from 'office-ui-fabric-react/lib/Selection';
-import { getStyles } from './Tree.styles';
 const getClassNames = classNamesFunction<ITreeStyleProps, ITreeStyles>();
 
 export interface ITreeState {
@@ -25,7 +24,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   constructor(props: ITreeProps) {
     super(props);
     this._hasMounted = false;
-    let { items, selectionMode = SelectionMode.none, getMode } = this.props;
+    let { items, selectionMode = SelectionMode.single, getMode } = this.props;
     this._treeMode = getMode ? getMode() : (new DefaultTreeMode() as any);
     this.state = {
       selectedKey: props.initialSelectedKey || props.selectedKey || null,
@@ -59,7 +58,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     });
     let roots = this._treeMode.getRoot();
     return (
-      <SelectionZone selection={selection} onItemInvoked={this.onItemInvoked} onItemContextMenu={onItemContextMenu}>
+      <SelectionZone selection={selection} onItemInvoked={this._onItemInvoked} onItemContextMenu={onItemContextMenu}>
         <FocusZone direction={FocusZoneDirection.vertical}>
           <div className={classNames.root}>{this._renderTreeNodes(roots, 0)}</div>
         </FocusZone>
@@ -102,44 +101,34 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
         data-is-focusable={true}
         data-selection-select
         data-selection-index={index}
-        data-selection-toggle={true}
       >
-        <span className={classNames.nodeSpace} style={{ width: 20 * nestingLevel + 'px', display: 'inline-block' }} />
-        <span className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
-          {isLeaf && (
-            <div>
-              <Icon iconName="" />
-              <Icon iconName="" />
+        <div className={classNames.nodeSpace} style={{ minWidth: 13 * nestingLevel + 'px' }} />
+        {isLeaf && <div className={classNames.leafHead} />}
+        {!isLeaf &&
+          isExpanded && (
+            <div className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
+              <Icon iconName="CaretSolid" />
             </div>
           )}
-          {!isLeaf &&
-            isExpanded && (
-              <div>
-                <Icon iconName="CaretSolid" />
-                <Icon iconName="OpenFolderHorizontal" />
-              </div>
-            )}
-          {!isLeaf &&
-            !isExpanded && (
-              <div>
-                <Icon iconName="CaretHollow" />
-                <Icon iconName="FolderHorizontal" />
-              </div>
-            )}
-        </span>
-        <span className={classNames.nodeCheckbox}>
-          {visualCheckbox &&
-            selectionMode !== SelectionMode.none && (
+        {!isLeaf &&
+          !isExpanded && (
+            <div className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
+              <Icon iconName="CaretHollow" />
+            </div>
+          )}
+        {visualCheckbox &&
+          selectionMode !== SelectionMode.none && (
+            <div className={classNames.nodeCheckbox} data-selection-toggle>
               <Checkbox
                 styles={{ checkbox: classNames.checkboxField }}
                 checked={itemSelected}
-                onChange={(ev, isChecked: boolean) => {
+                onChange={(ev: any, isChecked: boolean) => {
                   selection.setIndexSelected(index, isChecked, true);
                 }}
               />
-            )}
-        </span>
-        <div className={classNames.nodeContent}>{onRenderItem && onRenderItem(item)}</div>
+            </div>
+          )}
+        <div className={classNames.nodeContent}>{onRenderItem && onRenderItem(item, isLeaf, isExpanded)}</div>
       </div>
     );
   }
@@ -159,7 +148,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     return (
       <div key={index} className={classNames.treeGroup}>
         {this._renderNode(item, nestingLevel, false, expanded)}
-        {expanded && children && children.length > 0 && this._renderTreeNodes(children, nestingLevel)}
+        {expanded && children && children.length > 0 && this._renderTreeNodes(children, ++nestingLevel)}
       </div>
     );
   }
@@ -183,7 +172,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     }
   }
 
-  private onItemInvoked = (item?: IObjectWithKey, index?: number, ev?: Event) => {
+  private _onItemInvoked = (item?: IObjectWithKey, index?: number, ev?: Event) => {
     let { onItemInvoked } = this.props;
     if (onItemInvoked) {
       onItemInvoked(item);

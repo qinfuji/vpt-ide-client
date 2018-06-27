@@ -23,7 +23,7 @@ export interface ITreeProps {
   items: ITreeItem[];
   getMode?: () => ITreeMode<ITreeItem>;
   componentRef?: (ref: ITree | null) => void | ITree;
-  onRenderItem: (item: ITreeItem) => React.ReactNode;
+  onRenderItem: (item: ITreeItem, isLeaf?: boolean, isExpanded?: boolean) => React.ReactNode;
   initialSelectedKey?: string;
   selectedKey?: string;
   className?: string;
@@ -45,11 +45,12 @@ export interface ITreeStyleProps {
 
 export interface ITreeStyles {
   root: IStyle;
-  treeNode: IStyle;
-  treeGroup: IStyle;
-  nodeSpace: IStyle;
-  nodeArrow: IStyle;
-  nodeCheckbox: IStyle;
-  checkboxField: IStyle;
-  nodeContent: IStyle;
+  treeNode?: IStyle;
+  treeGroup?: IStyle;
+  nodeSpace?: IStyle;
+  leafHead?: IStyle;
+  nodeArrow?: IStyle;
+  nodeCheckbox?: IStyle;
+  checkboxField?: IStyle;
+  nodeContent?: IStyle;
 }

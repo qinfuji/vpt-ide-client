@@ -37,7 +37,7 @@ export class DefaultTreeMode implements ITreeMode<IFlatTreeItem> {
     });
   }
   isExpanded(ITreeItem: IFlatTreeItem): boolean {
-    return true;
+    return false;
   }
 
   getId(item: IFlatTreeItem): string | number {

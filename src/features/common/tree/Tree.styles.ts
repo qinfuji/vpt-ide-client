@@ -14,15 +14,17 @@ export const getStyles = (props: ITreeStyleProps): ITreeStyles => {
   const classNames = getGlobalClassNames(GlobalClassNames, theme);
 
   return {
-    root: [classNames.root, { marginTop: '10px', marginLeft: '10px' }, className],
+    root: [classNames.root, className],
     treeNode: [
       classNames.treeNode,
       {
-        height: '30px',
-        lineHeight: '30px',
+        userSelect: 'none', //禁止双击选择
+        height: '1.8rem',
+        lineHeight: '1.8rem',
         display: 'flex',
+        flexFlow: 'row',
         fontSize: FontSizes.mediumPlus,
-        fontWeight: FontWeights.regular,
+        fontWeight: FontWeights.semilight,
         selectors: {
           '&:hover': {
             backgroundColor: theme.palette.neutralLighter
@@ -35,10 +37,11 @@ export const getStyles = (props: ITreeStyleProps): ITreeStyles => {
       }
     ],
     treeGroup: [],
-    nodeSpace: [{ display: 'inline-block' }],
-    nodeArrow: [{ display: 'flex' }],
+    nodeSpace: [{}],
+    leafHead: [{ minWidth: '18px' }],
+    nodeArrow: [{ display: 'flex', marginRight: '2px' }],
     nodeCheckbox: [{ display: 'inherit', marginLeft: '5px', marginRight: '5px', marginTop: '4px' }],
-    checkboxField: [{ width: 14, height: 14 }],
-    nodeContent: [{ marginLeft: '5px' }]
+    checkboxField: [{ width: FontSizes.smallPlus, height: FontSizes.smallPlus }],
+    nodeContent: [{ display: 'flex', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }]
   };
 };

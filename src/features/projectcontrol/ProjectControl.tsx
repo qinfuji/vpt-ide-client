@@ -47,7 +47,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     let { projectInfo } = this.props.projectControl;
     return (
       <SplitPane split="vertical">
-        <Pane initialSize="300px" minSize="220px">
+        <Pane initialSize="260px" minSize="220px">
           <div className={styles.root}>
             <div className={styles.controlPanel}>
               <OverflowSet

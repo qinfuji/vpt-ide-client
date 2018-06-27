@@ -48,7 +48,7 @@
   border-radius: 3px;
   position: relative;
   @include ms-font-s();
-  color: $ms-color-neutralSecondaryAlt;
+  color: $ms-color-neutralSecondary;
   &:hover {
     background-color: $ms-color-neutralLight;
     color: $ms-color-neutralSecondary;
@@ -67,7 +67,7 @@
 }
 
 .toolListItem-name {
-  @include ms-font-l;
+  @include ms-font-m-plus;
   white-space: nowrap;
   overflow: hidden;
   text-align: center;

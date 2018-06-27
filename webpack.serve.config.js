@@ -6,15 +6,25 @@ module.exports = resources.createServeConfig({
 
   devServer: {
     port: 9000,
+    setup: function(app) {
+      app.get('/projects/:id', function(req, res) {
+        let { fetchProjectData } = require(path.join(__dirname, './src/mocks/fetchProjectData'));
+        let id = req.params.id;
+        let ret = {};
+        try {
+          ret = fetchProjectData(id);
+        } finally {
+          delete require.cache[path.join(__dirname, './src/mocks/fetchProjectData.js')];
+        }
+
+        res.json(ret);
+      });
+    },
     proxy: [
       {
         changeOrigin: true,
         context: ['/projects'],
         target: 'http://localhost:3000/mock/11'
-      },
-      {
-        changeOrigin: true,
-        context: ['/projects/sss']
       }
     ]
   },

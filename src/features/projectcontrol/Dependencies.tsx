@@ -44,7 +44,7 @@ class Dependencise extends BaseComponent<IDependenciseProps> implements IDepende
       <div className={styles.dependList}>
         <div className={styles.dependListHead}>{title}</div>
         <div className={styles.dependListAdd}>
-          <TextField borderless />
+          <TextField borderless inputClassName={styles.searchTextField} className="aaaa" />
           <DefaultButton text="Add" />
         </div>
         <div className={styles.dependListContent}>
@@ -66,30 +66,38 @@ class Dependencise extends BaseComponent<IDependenciseProps> implements IDepende
       <DetailsList
         className={styles.detaillist}
         compact={false}
-        isHeaderVisible={true}
-        constrainMode={ConstrainMode.unconstrained}
+        //isHeaderVisible={true}
+        //constrainMode={ConstrainMode.unconstrained}
         selectionMode={SelectionMode.none}
         items={dependencies}
         onRenderItemColumn={this._onRenderItemColumn}
         columns={[
-          { key: 'name', name: 'Name', minWidth: 60, maxWidth: 75, fieldName: 'name' },
-          { key: 'installed', name: 'Version', minWidth: 10, maxWidth: 52, fieldName: 'installed' },
-          { key: 'operation', name: '', minWidth: 10, maxWidth: 10 }
+          { key: 'name', name: 'Name', minWidth: 60, maxWidth: 205, fieldName: 'name' }
+          //{ key: 'installed', name: 'Version', minWidth: 10, maxWidth: 52, fieldName: 'installed' },
+          //{ key: 'operation', name: '', minWidth: 10, maxWidth: 10 }
         ]}
       />
     );
   }
 
   private _onRenderItemColumn(item: any, index: number, column: IColumn): JSX.Element {
-    if (column.key === 'operation') {
-      return (
-        <div className={styles.operationBar}>
-          <Icon iconName="Movers" />
-          <Icon iconName="delete" />
-        </div>
-      );
-    }
-    return item[column.key];
+    // if (column.key === 'operation') {
+    //   return (
+    //     <div className={styles.operationBar}>
+    //       <Icon iconName="Movers" />
+    //       <Icon iconName="delete" />
+    //     </div>
+    //   );
+    // }
+    // return item[column.key];
+    return (
+      <div>
+        <div>{item[column.key]}</div>
+        <div>{item.required}</div>
+        <div>{item.installed}</div>
+        <div>{item.latest}</div>
+      </div>
+    );
   }
 }
 
