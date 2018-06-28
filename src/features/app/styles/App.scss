@@ -1,14 +1,18 @@
 @import '../../../styles/common';
 
 .root {
-  position: relative;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 .appToolbar {
-  height: 40px;
+  height: 30px;
 }
 .appWorkspace {
   position: absolute;
-  top: 40px;
+  top: 33px;
   left: 0px;
   bottom: 0px;
   right: 0px;

@@ -5,10 +5,9 @@ import { connect } from 'react-redux';
 import { OverflowSet, IOverflowSetItemProps } from 'office-ui-fabric-react/lib/OverflowSet';
 import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import classnames from 'classnames';
-import { SplitPane, Pane } from 'vpt-components';
 import ToolBox from './ToolsBox';
 import ProjectExplorer from './ProjectExplorer';
-import PageControl from '../pagecontrol/PageControl';
+
 import Dependencies from './Dependencies';
 
 import { showme as openProjectSelector } from '../selectproject/redux/actions';
@@ -46,24 +45,19 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
   public render() {
     let { projectInfo } = this.props.projectControl;
     return (
-      <SplitPane split="vertical">
-        <Pane initialSize="260px" minSize="220px">
-          <div className={styles.root}>
-            <div className={styles.controlPanel}>
-              <OverflowSet
-                items={[
-                  { key: 'projectExplorer', name: '资源管理器' },
-                  { key: 'toolbox', name: '工具箱' },
-                  { key: 'dependencies', name: '项目依赖' }
-                ]}
-                onRenderItem={this._onRenterTabItem}
-              />
-            </div>
-            {projectInfo && this._renderViewPanel(projectInfo)}
-          </div>
-        </Pane>
-        <Pane>{projectInfo && <PageControl />}</Pane>
-      </SplitPane>
+      <div className={styles.root}>
+        <div className={styles.controlPanel}>
+          <OverflowSet
+            items={[
+              { key: 'projectExplorer', name: '资源管理器' },
+              { key: 'toolbox', name: '工具箱' },
+              { key: 'dependencies', name: '项目依赖' }
+            ]}
+            onRenderItem={this._onRenterTabItem}
+          />
+        </div>
+        {projectInfo && this._renderViewPanel(projectInfo)}
+      </div>
     );
   }
 

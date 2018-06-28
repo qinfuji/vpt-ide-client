@@ -23,7 +23,7 @@ export const getStyles = (props: ITreeStyleProps): ITreeStyles => {
         lineHeight: '1.8rem',
         display: 'flex',
         flexFlow: 'row',
-        fontSize: FontSizes.mediumPlus,
+        fontSize: FontSizes.medium,
         fontWeight: FontWeights.semilight,
         selectors: {
           '&:hover': {

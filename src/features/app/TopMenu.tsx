@@ -67,21 +67,13 @@ class TopMenu extends React.Component<ITopMenuProps> {
             }
           ]
         }
-      },
-      {
-        key: 'edit',
-        name: '编辑'
       }
     ];
   }
 
   render() {
     let menuData = this.getMenuData();
-    return (
-      <div className="top-menu">
-        <CommandBar items={menuData} />
-      </div>
-    );
+    return <CommandBar items={menuData} styles={{ root: { height: '30px', paddingTop: '2px' } }} />;
   }
 }
 

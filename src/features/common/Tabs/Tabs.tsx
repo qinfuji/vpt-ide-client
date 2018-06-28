@@ -3,7 +3,4 @@ import { TabsBase } from './Tabs.base';
 import { getStyles } from './Tabs.styles';
 import { ITabsProps, ITabsStyleProps, ITabsStyles } from './Tabs.types';
 
-export const Label = styled<ITabsProps, ITabsStyleProps, ITabsStyles>(
-  TabsBase,
-  getStyles
-);
+export const Tabs = styled<ITabsProps, ITabsStyleProps, ITabsStyles>(TabsBase, getStyles);

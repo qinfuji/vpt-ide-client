@@ -6,7 +6,13 @@ import Root from './Root';
 import routeConfig from './common/routeConfig';
 import configStore from './common/configStore';
 import { initializeIcons } from '@uifabric/icons';
+import { loadTheme } from 'office-ui-fabric-react/lib/Styling';
+import * as overTheme from './features/app/appTheme.json';
 initializeIcons();
+
+const finalTheme = loadTheme({ ...{ palette: overTheme } });
+document.body.style.backgroundColor = finalTheme.semanticColors.bodyBackground;
+document.body.style.color = finalTheme.semanticColors.bodyText;
 
 const store = configStore();
 let root = document.getElementById('react-root');

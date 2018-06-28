@@ -1,29 +1,24 @@
 import * as React from 'react';
 import { ITheme, IStyle } from 'office-ui-fabric-react/lib/Styling';
-import {
-  IComponentAs,
-  IStyleFunctionOrObject
-} from 'office-ui-fabric-react/lib/Utilities';
+import { IStyleFunctionOrObject } from 'office-ui-fabric-react/lib/Utilities';
 
 export interface ITabs {}
 
-export interface ITabsProps
-  extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface ITabItem {
+  name: string;
+}
+
+export interface ITabsProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   componentRef?: (component: ITabs | null) => void;
-
-  /**
-   * Theme provided by HOC.
-   */
   theme?: ITheme;
-
-  /**
-   * Styles for the label.
-   */
   styles?: IStyleFunctionOrObject<ITabsStyleProps, ITabsStyles>;
+  activeTab?: number | string;
+  items: ITabItem[];
 }
 
 export interface ITabsStyles {
   root: IStyle;
+  tabbar: IStyle;
 }
 
 export interface ITabsStyleProps {
