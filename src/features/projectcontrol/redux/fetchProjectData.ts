@@ -3,7 +3,6 @@ import { Dispatch } from 'redux';
 import { IProjectInfo } from '../../../common/types';
 import initialState, { IProjectControlInitState } from './initialState';
 import { FETCH_PROJECT_DATA_BEGIN, FETCH_PROJECT_DATA_SUCCESS, FETCH_PROJECT_DATA_FAILURE } from './constants';
-
 export { IProjectInfo } from '../../../common/types';
 
 export function fetchProjectData(id: string) {

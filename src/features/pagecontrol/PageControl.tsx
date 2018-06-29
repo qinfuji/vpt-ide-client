@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { SplitPane, Pane } from 'vpt-components';
-class PageControl extends BaseComponent {
+export class PageControl extends BaseComponent {
   render() {
     return (
       <SplitPane split="vertical">
@@ -18,5 +18,3 @@ class PageControl extends BaseComponent {
     );
   }
 }
-
-export default PageControl;

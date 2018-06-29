@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
-import { loadTheme } from 'office-ui-fabric-react/lib/Styling';
 import { connect } from 'react-redux';
 import { setUser } from './redux/actions';
 import TopMenu from './TopMenu';
 import ProjectControl from '../projectcontrol/ProjectControl';
 import Login from './Login';
 import * as styles from './styles/App.scss';
-//import * as overTheme from './appTheme.json';
 import SelectProject from '../selectproject/SelectProject';
 import { SplitPane, Pane } from 'vpt-components';
 import PageControl from '../pagecontrol/PageControl';
@@ -23,12 +21,6 @@ export class App extends React.Component<IAppProps, {}> {
   constructor(props: IAppProps) {
     super(props);
   }
-
-  // componentDidMount() {
-  //   const finalTheme = loadTheme({ ...{ palette: overTheme } });
-  //   document.body.style.backgroundColor = finalTheme.semanticColors.bodyBackground;
-  //   document.body.style.color = finalTheme.semanticColors.bodyText;
-  // }
 
   renderLoading() {
     return (
@@ -57,7 +49,8 @@ export class App extends React.Component<IAppProps, {}> {
             </Pane>
             <Pane>
               <Tabs />
-              {<PageControl />}
+              {/* {<PageControl />} */}
+              {this.props.children}
             </Pane>
           </SplitPane>
           <SelectProject />

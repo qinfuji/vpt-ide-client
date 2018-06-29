@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { IProjectStructure, IFile } from '../../common/types';
 import Panel from './Panel';
-import { Pane, SplitPane } from 'vpt-components';
 import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as stylesImport from './styles/ProjectExplorer.scss';
