@@ -7,9 +7,6 @@ import ProjectControl from '../projectcontrol/ProjectControl';
 import Login from './Login';
 import * as styles from './styles/App.scss';
 import SelectProject from '../selectproject/SelectProject';
-import { SplitPane, Pane } from 'vpt-components';
-import PageControl from '../pagecontrol/PageControl';
-import { Tabs } from '../common/Tabs';
 
 export interface IAppProps {
   actions: object;
@@ -38,21 +35,8 @@ export class App extends React.Component<IAppProps, {}> {
     } else {
       return (
         <div className={styles.root + ' home-app'}>
-          <SplitPane split="vertical">
-            <Pane initialSize="220px" minSize="220px">
-              <div className={styles.appToolbar}>
-                <TopMenu />
-              </div>
-              <div className={styles.appWorkspace}>
-                <ProjectControl />
-              </div>
-            </Pane>
-            <Pane>
-              <Tabs />
-              {/* {<PageControl />} */}
-              {this.props.children}
-            </Pane>
-          </SplitPane>
+          <TopMenu />
+          <div className={styles.appWorkspace}>{this.props.children}</div>
           <SelectProject />
         </div>
       );

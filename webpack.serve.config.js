@@ -6,7 +6,7 @@ module.exports = resources.createServeConfig({
 
   devServer: {
     port: 9000,
-    setup: function(app) {
+    before: function(app) {
       app.get('/projects/:id', function(req, res) {
         let { fetchProjectData } = require(path.join(__dirname, './src/mocks/fetchProjectData'));
         let id = req.params.id;

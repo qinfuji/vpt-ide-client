@@ -7,8 +7,9 @@ import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import classnames from 'classnames';
 import ToolBox from './ToolsBox';
 import ProjectExplorer from './ProjectExplorer';
-
 import Dependencies from './Dependencies';
+import { SplitPane, Pane } from 'vpt-components';
+import { OpenFileTabs } from './OpenFileTabs';
 
 import { showme as openProjectSelector } from '../selectproject/redux/actions';
 import { IProjectControlInitState } from './redux/initialState';
@@ -43,20 +44,28 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
   }
 
   public render() {
-    let { projectInfo } = this.props.projectControl;
+    let { projectInfo, openTabs } = this.props.projectControl;
     return (
       <div className={styles.root}>
-        <div className={styles.controlPanel}>
-          <OverflowSet
-            items={[
-              { key: 'projectExplorer', name: '资源管理器' },
-              { key: 'toolbox', name: '工具箱' },
-              { key: 'dependencies', name: '项目依赖' }
-            ]}
-            onRenderItem={this._onRenterTabItem}
-          />
-        </div>
-        {projectInfo && this._renderViewPanel(projectInfo)}
+        <SplitPane split="vertical">
+          <Pane initialSize="220px" minSize="220px">
+            <div className={styles.controlPanel}>
+              <OverflowSet
+                items={[
+                  { key: 'projectExplorer', name: '资源管理器' },
+                  { key: 'toolbox', name: '工具箱' },
+                  { key: 'dependencies', name: '项目依赖' }
+                ]}
+                onRenderItem={this._onRenterTabItem}
+              />
+            </div>
+            {projectInfo && this._renderViewPanel(projectInfo)}
+          </Pane>
+          <Pane>
+            <OpenFileTabs items={openTabs} />
+            {this.props.children}
+          </Pane>
+        </SplitPane>
       </div>
     );
   }

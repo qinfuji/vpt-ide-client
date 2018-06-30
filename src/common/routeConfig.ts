@@ -1,8 +1,9 @@
 import * as React from 'react';
 import App from '../features/app/App';
-import Welcome from '../features/app/Welcome';
+//import Welcome from '../features/app/Welcome';
 import { PageNotFound } from '../features/common/PageNotFound';
-import { PageControl } from '../features/pagecontrol';
+//import { PageControl } from '../features/pagecontrol';
+import ProjectControlRoute from '../features/projectcontrol/route';
 import { RouteComponentProps } from 'react-router-dom';
 export interface IRouter {
   path: string;
@@ -12,15 +13,15 @@ export interface IRouter {
   childRoutes?: IRouter[];
 }
 
+const childRoutes = [ProjectControlRoute];
+
 const routes: IRouter[] = [
   {
     path: '/',
     component: App,
-    childRoutes: [
-      { path: '/project/:projectId/file/:path/:type', name: 'edit file', component: PageControl },
-      { path: '/welcome', name: 'welcome', component: Welcome },
-      { path: '*', name: 'Page not found', component: PageNotFound }
-    ].filter((r: IRouter) => r.component || (r.childRoutes && r.childRoutes.length > 0))
+    childRoutes: [...childRoutes, { path: '*', name: 'Page not found', component: PageNotFound }].filter(
+      (r: IRouter) => r.component || (r.childRoutes && r.childRoutes.length > 0)
+    )
   }
 ];
 

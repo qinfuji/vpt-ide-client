@@ -28,5 +28,5 @@ if (fs.existsSync(configPath)) {
   );
   const execSync = require('./exec-sync');
 
-  execSync(`node ${webpackDevServerPath} --config ${configPath} --hot --open`);
+  execSync(`node ${webpackDevServerPath} --config ${configPath} --hot --open  --history-api-fallback`);
 }

@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { IProjectInfo } from '../../../common/types';
 import initialState, { IProjectControlInitState } from './initialState';
 import { FETCH_PROJECT_DATA_BEGIN, FETCH_PROJECT_DATA_SUCCESS, FETCH_PROJECT_DATA_FAILURE } from './constants';
-export { IProjectInfo } from '../../../common/types';
+import { getOpenTabs } from './openTabs';
 
 export function fetchProjectData(id: string) {
   return (dispatch: Dispatch) => {
@@ -14,6 +14,7 @@ export function fetchProjectData(id: string) {
       let url = `/projects/${id}`;
       axios.get(url).then(
         res => {
+          res.data.__id = id;
           dispatch({
             type: FETCH_PROJECT_DATA_SUCCESS,
             data: res.data
@@ -45,6 +46,8 @@ export function reducer(state: IProjectControlInitState = initialState, action: 
         ...state,
         projectInfoFetchState: FETCH_PROJECT_DATA_SUCCESS,
         projectInfo: action.data as IProjectInfo,
+        currActiveTab: {},
+        openTabs: getOpenTabs((action.data as any).__id),
         pageInfoFetchState: null,
         pageInfo: null,
         pageOutline: null,
