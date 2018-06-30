@@ -9,7 +9,7 @@ import ToolBox from './ToolsBox';
 import ProjectExplorer from './ProjectExplorer';
 import Dependencies from './Dependencies';
 import { SplitPane, Pane } from 'vpt-components';
-import { OpenFileTabs } from './OpenFileTabs';
+import OpenFileTabs from './OpenFileTabs';
 
 import { showme as openProjectSelector } from '../selectproject/redux/actions';
 import { IProjectControlInitState } from './redux/initialState';
@@ -62,7 +62,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
             {projectInfo && this._renderViewPanel(projectInfo)}
           </Pane>
           <Pane>
-            <OpenFileTabs items={openTabs} />
+            <OpenFileTabs />
             {this.props.children}
           </Pane>
         </SplitPane>

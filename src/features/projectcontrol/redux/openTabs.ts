@@ -55,5 +55,7 @@ export function reducer(state: IProjectControlInitState = initialState, action: 
         activeTab: getActiveTab(action.data)
       };
     }
+    default:
+      return state;
   }
 }
