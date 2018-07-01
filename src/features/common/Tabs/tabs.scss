@@ -7,7 +7,7 @@
   font-size: $ms-font-size-m;
   justify-content: space-between;
   overflow: hidden;
-  overflow-x: auto;
+  //overflow-x: auto;
   white-space: nowrap;
   cursor: pointer;
 
@@ -41,6 +41,7 @@
     flex-grow: 1;
     flex-shrink: 0;
     margin: 0;
+    padding: 0;
     justify-content: flex-start;
     border-bottom-color: $ms-color-neutralLight;
     border-bottom-width: 2px;
@@ -82,6 +83,7 @@
   &.is-boxed {
     a {
       border: 1px solid transparent;
+      border-right: 1px solid $ms-color-neutralLight;
       border-radius: 0 0;
       &:hover {
         background-color: $ms-color-neutralLight;

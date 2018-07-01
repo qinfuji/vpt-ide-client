@@ -9,6 +9,8 @@ import {
   customizable,
   classNamesFunction
 } from 'office-ui-fabric-react/lib/Utilities';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 import { ITabsProps, ITabsStyleProps, ITabsStyles, ITabItem } from './Tabs.types';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
@@ -26,12 +28,13 @@ export class TabsBase extends BaseComponent<ITabsProps, {}> {
 
     return (
       <li
-        className={stylesImport.tabs + ' ' + (isActiveTab ? stylesImport['is-active'] : '')}
+        key={index}
+        className={stylesImport.tabs + ' ' + (isActiveTab ? stylesImport['is-active'] : '') + ' is-boxed'}
         onClick={isActiveTab ? null : this._onTabChange.bind(this, item, index)}
       >
         <TooltipHost
           calloutProps={{
-            directionalHint: DirectionalHint.bottomRightEdge,
+            directionalHint: DirectionalHint.bottomLeftEdge,
             isBeakVisible: false
           }}
           content={tooltip || ''}
@@ -41,6 +44,7 @@ export class TabsBase extends BaseComponent<ITabsProps, {}> {
             {icon && <Icon iconName={icon} />}
             <span>{name}</span>
             {canClose && (
+              // <FontAwesomeIcon icon="stroopwafel" />
               <Icon
                 iconName="Clear"
                 onClick={this._onCloseHandle.bind(this, item, index)}
@@ -79,7 +83,7 @@ export class TabsBase extends BaseComponent<ITabsProps, {}> {
   }
 
   public render(): JSX.Element {
-    const { className, theme, styles, items, activeTab } = this.props;
+    const { className, theme, styles, items, activeTab, mode } = this.props;
     const classNames = getClassNames(styles!, {
       theme: theme!,
       className: className
@@ -93,6 +97,8 @@ export class TabsBase extends BaseComponent<ITabsProps, {}> {
               let isActive = false;
               if (!activeTab && index === 0) {
                 isActive = true;
+              } else if (activeTab) {
+                isActive = mode.id(activeTab) === mode.id(item);
               }
               return this._renderItem(item, index, isActive);
             })}

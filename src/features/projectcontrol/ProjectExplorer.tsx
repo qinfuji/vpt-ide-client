@@ -1,164 +1,28 @@
 import * as React from 'react';
-import { IProjectStructure, IFile } from '../../common/types';
+import { IProjectStructure, IFile, IProjectBaseInfo } from '../../common/types';
+import history from '../../common/history';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import Panel from './Panel';
 import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as stylesImport from './styles/ProjectExplorer.scss';
 import { Tree, ITreeItem } from '../common/tree';
 import { FsTreeMode } from './FsTreeMode';
+import { activeTab } from './redux/openTabs';
 const styles: any = stylesImport;
-
-const pagesData = [
-  {
-    name: 'PAGE',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '1',
-    isLeaf: false
-  },
-  {
-    name: 'page1',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '2',
-    isLeaf: false,
-    parentId: '1'
-  },
-  {
-    name: 'page2',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '3',
-    isLeaf: true,
-    parentId: '1'
-  },
-
-  {
-    name: 'DIALOG',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '4'
-  },
-  {
-    name: 'tovfgp4',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '5',
-    isLeaf: true,
-    parentId: '4'
-  },
-  {
-    name: 'tovfgp5',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '6',
-    isLeaf: true,
-    parentId: '4'
-  },
-  {
-    name: 'WIDGET',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '7'
-  },
-  {
-    name: 'tovfgp4',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '8',
-    isLeaf: true,
-    parentId: '7'
-  },
-
-  {
-    name: 'tovfgp4',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '10',
-    isLeaf: true,
-    parentId: '2'
-  },
-  {
-    name: 'tovfgp5',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '11',
-    isLeaf: true,
-    parentId: '2'
-  },
-  {
-    name: 'tovfgp5',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '12',
-    isLeaf: true,
-    parentId: '2'
-  },
-
-  {
-    name: 'index.js',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '12',
-    isLeaf: true
-  },
-
-  {
-    name: 'routers.js',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '13',
-    isLeaf: true
-  },
-
-  {
-    name: 'index.html',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '14',
-    isLeaf: true
-  },
-  {
-    name: 'login.js',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '15',
-    isLeaf: true
-  },
-
-  {
-    name: 'App.js',
-    label: 'mgfeei',
-    type: 'DIALOG',
-    path: 'voluptate consectetur',
-    id: '16',
-    isLeaf: true
-  }
-];
 
 export interface IProjectExplorer {}
 
 export interface IProjectExplorerProps {
   structure: IProjectStructure;
+  projectBaseInfo: IProjectBaseInfo;
+  actions: any;
 }
 
 class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExplorerState>
   implements IProjectExplorer {
+  private _mode = new FsTreeMode();
   constructor(props: IProjectExplorerProps) {
     super(props);
   }
@@ -190,7 +54,7 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
       <Tree
         items={pages as ITreeItem[]}
         getMode={() => {
-          return new FsTreeMode();
+          return this._mode;
         }}
         onRenderItem={this._renderTreeNode}
         visualCheckbox={false}
@@ -201,13 +65,20 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
         onItemContextMenu={(item, index, ev: any) => {
           console.log('onItemContextMenu', item, index);
         }}
-        onItemInvoked={item => {
-          console.log('onItemInvoked', item);
-        }}
+        onItemInvoked={this._fileSelect}
         styles={{ root: { margin: '10px 0 0 15px' } }}
       />
     );
   }
+
+  private _fileSelect = (item: IFile) => {
+    if (this._mode.isLeaf(item)) {
+      //history.push(`/project/file/${encodeURIComponent(item.path)}/${item.type}`);
+      let { activeTab } = this.props.actions;
+      let { projectBaseInfo } = this.props;
+      activeTab(projectBaseInfo.id, item);
+    }
+  };
 
   private _renderTreeNode = (item: ITreeItem, isLeaf?: boolean, isExpanded?: boolean): React.ReactNode | null => {
     if (isLeaf) {
@@ -231,4 +102,19 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
   };
 }
 
-export default ProjectExplorer;
+function mapStateToProps(state: any) {
+  return {
+    structure: state.projectControl.projectInfo.structure,
+    projectBaseInfo: state.projectControl.projectInfo.baseInfo
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    actions: bindActionCreators({ activeTab }, dispatch)
+  };
+}
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProjectExplorer);

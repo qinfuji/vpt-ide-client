@@ -13,3 +13,9 @@ export function setItem(key: string, data: string): void {
     /* Eat the exception */
   }
 }
+
+export function removeItem(key: string): void {
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch (e) {}
+}

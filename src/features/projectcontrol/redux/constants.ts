@@ -6,5 +6,4 @@ export const FETCH_PROJECT_DATA_FAILURE = 'FETCH_PROJECT_DATA_FAILURE';
 export const PROJECT_CHANGE = 'PROJECT_RESELECT';
 
 //TAB相关
-export const RESET_TABS = 'RESET_TABS';
-export const ACTIVE_TAB = 'ACTIVE_TAB';
+export const CHANGE_TABS = 'CHANGE_TABS';

@@ -3,11 +3,13 @@ import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Tabs, ITabMode, ITabItem, ITabsProps } from '../common/Tabs';
-import { resetTabs, activeTab } from './redux/openTabs';
-import { IFile } from '../../common/types';
+import { activeTab, closeTab } from './redux/openTabs';
+import { IFile, IProjectBaseInfo } from '../../common/types';
 
 export interface OpenFileTabsProps extends ITabsProps {
   item?: IFile[] | null | undefined;
+  activeTab?: IFile;
+  projectBaseInfo?: IProjectBaseInfo;
   actions: any;
 }
 
@@ -23,6 +25,9 @@ class OpenFileTabsMode implements ITabMode<IFile> {
   }
   name(tabItem: IFile) {
     return tabItem.name;
+  }
+  id(tabItem: IFile) {
+    return tabItem.path;
   }
 }
 
@@ -49,28 +54,33 @@ class OpenFileTabs extends React.Component<OpenFileTabsProps> {
 
   private _onTabClosed(item: IFile, index: number) {
     let { closeTab } = this.props.actions;
-    if (closeTab) {
-      closeTab(item, index);
+    let { projectBaseInfo } = this.props;
+    if (projectBaseInfo && closeTab) {
+      closeTab(projectBaseInfo.id, item, index);
     }
-
-    console.log('_onTabClosed', item, index);
   }
 
   private _onTabChanged(item: IFile, index: number) {
-    console.log('_onTabChanged', item, index);
+    let { activeTab } = this.props.actions;
+    let { projectBaseInfo } = this.props;
+    if (closeTab && projectBaseInfo) {
+      activeTab(projectBaseInfo.id, item, index);
+    }
   }
 }
 
 function mapStateToProps(state: any) {
   return {
     items: state.projectControl.openTabs,
-    activeTab: state.projectControl.activeTab
+    activeTab: state.projectControl.activeTab,
+    projectBaseInfo:
+      state.projectControl && state.projectControl.projectInfo && state.projectControl.projectInfo.baseInfo
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    actions: bindActionCreators({ resetTabs, activeTab }, dispatch)
+    actions: bindActionCreators({ activeTab, closeTab }, dispatch)
   };
 }
 export default connect(

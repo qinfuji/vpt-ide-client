@@ -13,6 +13,7 @@ export interface ITabMode<T extends ITabItem> {
   name: (tabItem: T) => string;
   tooltip: (tabItem: T) => string | null;
   canClose: (tabItem: T) => boolean;
+  id: (tabItem: T) => string;
 }
 
 export interface ITabsProps extends React.LabelHTMLAttributes<HTMLLabelElement> {

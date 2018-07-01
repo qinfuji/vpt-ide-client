@@ -19,6 +19,18 @@ module.exports = resources.createServeConfig({
 
         res.json(ret);
       });
+      app.get('/projects', function(req, res) {
+        let { fetchProjects } = require(path.join(__dirname, './src/mocks/fetchProjects'));
+        let id = req.params.id;
+        let ret = {};
+        try {
+          ret = fetchProjects(id);
+        } finally {
+          delete require.cache[path.join(__dirname, './src/mocks/fetchProjects.js')];
+        }
+
+        res.json(ret);
+      });
     },
     proxy: [
       {

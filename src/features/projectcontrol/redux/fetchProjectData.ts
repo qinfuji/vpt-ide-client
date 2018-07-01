@@ -46,7 +46,6 @@ export function reducer(state: IProjectControlInitState = initialState, action: 
         ...state,
         projectInfoFetchState: FETCH_PROJECT_DATA_SUCCESS,
         projectInfo: action.data as IProjectInfo,
-        currActiveTab: {},
         openTabs: getOpenTabs((action.data as any).__id),
         pageInfoFetchState: null,
         pageInfo: null,

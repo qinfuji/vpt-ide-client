@@ -8,6 +8,12 @@ import configStore from './common/configStore';
 import { initializeIcons } from '@uifabric/icons';
 import { loadTheme } from 'office-ui-fabric-react/lib/Styling';
 import * as overTheme from './features/app/appTheme.json';
+//import { library } from '@fortawesome/fontawesome-svg-core';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+//import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
+
+//library.add(faStroopwafel);
+
 initializeIcons();
 
 const finalTheme = loadTheme({ ...{ palette: overTheme } });

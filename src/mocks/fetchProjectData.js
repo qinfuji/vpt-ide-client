@@ -163,6 +163,7 @@ let walk = function(dir) {
 module.exports.fetchProjectData = function(id) {
   let package = require('../../package.json');
   return {
+    baseInfo: { id: id, name: 'name' },
     components: getComponents(),
     dependencies: {
       dependencies: package.dependencies ? parseDependencies(package.dependencies) : [],

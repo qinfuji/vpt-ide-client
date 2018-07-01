@@ -7,6 +7,7 @@ import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import classnames from 'classnames';
 import ToolBox from './ToolsBox';
 import ProjectExplorer from './ProjectExplorer';
+import { PageControl } from '../pagecontrol';
 import Dependencies from './Dependencies';
 import { SplitPane, Pane } from 'vpt-components';
 import OpenFileTabs from './OpenFileTabs';
@@ -63,7 +64,8 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
           </Pane>
           <Pane>
             <OpenFileTabs />
-            {this.props.children}
+            {/* {this.props.children} */}
+            <PageControl />
           </Pane>
         </SplitPane>
       </div>
@@ -75,7 +77,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
     return (
       <div className={styles.viewPanel}>
         <div className={styles.viewPanel_content}>
-          {curTabkey == 'projectExplorer' && <ProjectExplorer structure={projectInfo.structure} />}
+          {curTabkey == 'projectExplorer' && <ProjectExplorer />}
           {curTabkey == 'toolbox' && <ToolBox items={projectInfo.components} />}
           {curTabkey == 'dependencies' && <Dependencies items={projectInfo.dependencies} />}
         </div>
