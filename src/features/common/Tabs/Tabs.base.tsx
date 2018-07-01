@@ -38,7 +38,7 @@ export class TabsBase extends BaseComponent<ITabsProps, {}> {
             isBeakVisible: false
           }}
           content={tooltip || ''}
-          delay={TooltipDelay.medium}
+          delay={TooltipDelay.long}
         >
           <a>
             {icon && <Icon iconName={icon} />}
