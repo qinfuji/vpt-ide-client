@@ -13,21 +13,21 @@ import { SplitPane, Pane } from 'vpt-components';
 import OpenFileTabs from './OpenFileTabs';
 
 import { showme as openProjectSelector } from '../selectproject/redux/actions';
-import { IProjectControlInitState } from './redux/initialState';
+import { IProjectControlState } from './redux/initialState';
 import { IProjectInfo } from '../../common/types';
 import * as styles from './styles/ProjectControl.scss';
 
 export interface IProjectControlProps {
-  projectControl: IProjectControlInitState;
+  projectControl: IProjectControlState;
   componentRef?: (component: ProjectControl | null) => void;
   actions: any;
 }
 
-export interface IProjectControlState {
+export interface IProjectControlViewState {
   curTabkey: string;
 }
 
-class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControlState> {
+class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControlViewState> {
   constructor(props: IProjectControlProps) {
     super(props);
     this._onRenterTabItem = this._onRenterTabItem.bind(this);
@@ -45,7 +45,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
   }
 
   public render() {
-    let { projectInfo, openTabs } = this.props.projectControl;
+    let { projectInfo } = this.props.projectControl;
     return (
       <div className={styles.root}>
         <SplitPane split="vertical">
@@ -64,7 +64,6 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
           </Pane>
           <Pane>
             <OpenFileTabs />
-            {/* {this.props.children} */}
             <PageControl />
           </Pane>
         </SplitPane>
@@ -104,7 +103,7 @@ class ProjectControl extends BaseComponent<IProjectControlProps, IProjectControl
 
 function mapStateToProps(state: any) {
   return {
-    projectControl: state.projectControl as IProjectControlInitState
+    projectControl: state.projectControl as IProjectControlState
   };
 }
 

@@ -35,7 +35,7 @@ export class FsTreeMode implements ITreeMode<IFsTreeItem> {
     return false;
   }
 
-  getId(item: IFsTreeItem): string | number {
+  getId(item: IFsTreeItem): string {
     return item.path;
   }
 

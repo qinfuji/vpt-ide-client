@@ -3,7 +3,8 @@ import { IProjectStructure, IFile, IProjectBaseInfo } from '../../common/types';
 import history from '../../common/history';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import Panel from './Panel';
+//import Panel from './Panel';
+import { Panel } from '../common/Panel';
 import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as stylesImport from './styles/ProjectExplorer.scss';
@@ -45,28 +46,25 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
     );
   }
 
-  private _renderLayout(): JSX.Element | null {
-    return null;
-  }
-
   private _renderPages(pages: IFile[]): JSX.Element | null {
     return (
       <Tree
         items={pages as ITreeItem[]}
-        getMode={() => {
-          return this._mode;
-        }}
+        mode={this._mode}
         onRenderItem={this._renderTreeNode}
         visualCheckbox={false}
         selectionMode={SelectionMode.multiple}
         onLinkExpandClick={(e, i) => {
-          console.log(e, i);
+          console.log('onLinkExpandClick', e, i);
         }}
         onItemContextMenu={(item, index, ev: any) => {
           console.log('onItemContextMenu', item, index);
         }}
         onItemInvoked={this._fileSelect}
         styles={{ root: { margin: '10px 0 0 15px' } }}
+        onSelectChange={items => {
+          console.log('onSelectChange', items);
+        }}
       />
     );
   }

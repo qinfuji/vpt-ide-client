@@ -1,6 +1,6 @@
 import { IFile } from '../../../common/types';
 import { Dispatch } from 'redux';
-import initialState, { IProjectControlInitState } from './initialState';
+import initialState, { IProjectControlState } from './initialState';
 import { SessionStorage } from '../../../utilities';
 import { CHANGE_TABS } from './constants';
 import OpenFileTabs from '../OpenFileTabs';
@@ -50,9 +50,8 @@ export function closeTab(projectId: string, closedTab: IFile) {
     if (closeIndex < 0) {
       return resetTabs(projectId, openTabs, null)(dispatch);
     }
-
     openTabs.splice(closeIndex, 1);
-    let newlen = OpenFileTabs.length;
+    let newlen = openTabs.length;
 
     if (newlen > 0 && closeIndex == 0) {
       return resetTabs(projectId, openTabs, openTabs[0])(dispatch);
@@ -89,7 +88,7 @@ export function activeTab(projectId: string, activeTab: IFile) {
   };
 }
 
-export function reducer(state: IProjectControlInitState = initialState, action: any) {
+export function reducer(state: IProjectControlState = initialState, action: any) {
   switch (action.type) {
     case CHANGE_TABS: {
       return {

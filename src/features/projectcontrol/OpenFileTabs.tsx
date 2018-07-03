@@ -2,15 +2,15 @@
 import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Tabs, ITabMode, ITabItem, ITabsProps } from '../common/Tabs';
+import { Tabs, ITabMode, ITabsProps } from '../common/Tabs';
 import { activeTab, closeTab } from './redux/openTabs';
 import { IFile, IProjectBaseInfo } from '../../common/types';
 
-export interface OpenFileTabsProps extends ITabsProps {
-  item?: IFile[] | null | undefined;
+export interface OpenFileTabsProps {
+  items?: IFile[] | null | undefined;
   activeTab?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
-  actions: any;
+  actions?: any;
 }
 
 class OpenFileTabsMode implements ITabMode<IFile> {
@@ -43,7 +43,7 @@ class OpenFileTabs extends React.Component<OpenFileTabsProps> {
     let { items, activeTab } = this.props;
     return (
       <Tabs
-        items={items}
+        items={items || []}
         activeTab={activeTab}
         mode={this._mode}
         onTabClosed={this._onTabClosed.bind(this)}
@@ -69,7 +69,7 @@ class OpenFileTabs extends React.Component<OpenFileTabsProps> {
   }
 }
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: any): OpenFileTabsProps {
   return {
     items: state.projectControl.openTabs,
     activeTab: state.projectControl.activeTab,
@@ -78,12 +78,12 @@ function mapStateToProps(state: any) {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch): OpenFileTabsProps {
   return {
     actions: bindActionCreators({ activeTab, closeTab }, dispatch)
   };
 }
-export default connect(
+export default connect<OpenFileTabsProps>(
   mapStateToProps,
   mapDispatchToProps
 )(OpenFileTabs);

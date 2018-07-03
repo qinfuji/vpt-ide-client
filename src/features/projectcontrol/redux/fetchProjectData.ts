@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
 import { IProjectInfo } from '../../../common/types';
-import initialState, { IProjectControlInitState } from './initialState';
+import initialState, { IProjectControlState } from './initialState';
 import { FETCH_PROJECT_DATA_BEGIN, FETCH_PROJECT_DATA_SUCCESS, FETCH_PROJECT_DATA_FAILURE } from './constants';
-import { getOpenTabs } from './openTabs';
+import { getOpenTabs, getActiveTab } from './openTabs';
 
 export function fetchProjectData(id: string) {
   return (dispatch: Dispatch) => {
@@ -33,7 +33,7 @@ export function fetchProjectData(id: string) {
   };
 }
 
-export function reducer(state: IProjectControlInitState = initialState, action: any) {
+export function reducer(state: IProjectControlState = initialState, action: any) {
   switch (action.type) {
     case FETCH_PROJECT_DATA_BEGIN:
       return {
@@ -47,6 +47,7 @@ export function reducer(state: IProjectControlInitState = initialState, action: 
         projectInfoFetchState: FETCH_PROJECT_DATA_SUCCESS,
         projectInfo: action.data as IProjectInfo,
         openTabs: getOpenTabs((action.data as any).__id),
+        activeTab: getActiveTab((action.data as any).__id),
         pageInfoFetchState: null,
         pageInfo: null,
         pageOutline: null,

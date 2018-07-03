@@ -3,7 +3,7 @@ import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { DetailsList, SelectionMode, IColumn, ConstrainMode } from 'office-ui-fabric-react/lib/DetailsList';
-import { Icon } from 'office-ui-fabric-react/lib/Icon';
+//import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { SplitPane, Pane } from 'vpt-components';
 import { IProjectDependencies, IProjectDependency } from '../../common/types';
 import classnames from 'classnames';

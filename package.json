@@ -11,7 +11,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "@microsoft/load-themed-styles": "^1.7.61",
-    "@microsoft/loader-load-themed-styles": "^1.7.44"
+    "@microsoft/loader-load-themed-styles": "^1.7.44",
+    "postmate": "^1.4.2"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.4",

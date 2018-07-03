@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import * as styles from './styles/Panel.scss';
+import * as styles from './Panel.scss';
 
 export interface IPanelToolButton {
   icon: string;
@@ -19,7 +19,7 @@ export interface IPanelProps {
   showContent?: boolean;
 }
 
-class Panel extends React.Component<IPanelProps> {
+export class Panel extends React.Component<IPanelProps> {
   render() {
     let { icon, title, toolbtns, showContent = true } = this.props;
     return (
@@ -50,5 +50,3 @@ class Panel extends React.Component<IPanelProps> {
     );
   }
 }
-
-export default Panel;

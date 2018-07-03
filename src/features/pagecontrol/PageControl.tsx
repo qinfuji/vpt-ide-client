@@ -1,20 +1,41 @@
 import * as React from 'react';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
-import { SplitPane, Pane } from 'vpt-components';
-export class PageControl extends BaseComponent {
+import { IFile, IProjectBaseInfo } from '../../common/types';
+import PageEditor from './PageEditor';
+
+export interface PageControlProps {
+  actions?: any;
+  activeFile?: IFile;
+  projectBaseInfo?: IProjectBaseInfo;
+  componentRef?: (component: PageControl | null) => void;
+}
+
+class PageControl extends BaseComponent<PageControlProps> {
   render() {
-    return (
-      <SplitPane split="vertical">
-        <Pane>我是编辑层</Pane>
-        <Pane initialSize="355px" minSize="220px">
-          <SplitPane split="horizontal">
-            <Pane initialSize="380px" minSize="220px">
-              Pageoutline
-            </Pane>
-            <Pane>Properties</Pane>
-          </SplitPane>
-        </Pane>
-      </SplitPane>
-    );
+    let { activeFile, projectBaseInfo } = this.props;
+    if (!activeFile && !projectBaseInfo) {
+      return null;
+    }
+    return <PageEditor activeFile={activeFile} projectBaseInfo={projectBaseInfo} />;
   }
 }
+
+function mapStateToProps(state: any): PageControlProps {
+  return {
+    activeFile: state.projectControl.activeTab || null,
+    projectBaseInfo:
+      state.projectControl && state.projectControl.projectInfo && state.projectControl.projectInfo.baseInfo
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch): PageControlProps {
+  return {
+    actions: bindActionCreators({}, dispatch)
+  };
+}
+export default connect<PageControlProps, {}>(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageControl);

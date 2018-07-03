@@ -11,7 +11,7 @@ const getClassNames = classNamesFunction<ITreeStyleProps, ITreeStyles>();
 export interface ITreeState {
   //isGroupCollapsed?: { [key: string]: boolean };
   isLinkExpandStateChanged?: boolean;
-  selectedKey: string | null;
+  selectedKey?: string;
   selection: Selection;
   nodeExpandStates: { [key: string]: boolean };
 }
@@ -24,24 +24,31 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   constructor(props: ITreeProps) {
     super(props);
     this._hasMounted = false;
-    let { items, selectionMode = SelectionMode.single, getMode } = this.props;
-    this._treeMode = getMode ? getMode() : (new DefaultTreeMode() as any);
+    let { items, selectionMode = SelectionMode.single, mode, selectedKey } = this.props;
+    this._treeMode = mode ? mode : (new DefaultTreeMode() as any);
     this.state = {
-      selectedKey: props.initialSelectedKey || props.selectedKey || null,
       selection: new Selection({
-        getKey: item => (item as ITreeItem).id,
+        getKey: item => {
+          return this._treeMode.getId(item);
+        },
         selectionMode: selectionMode,
         onSelectionChanged: this._onSelectionChanged
       }),
       nodeExpandStates: {}
     };
     this.state.selection.setItems(items as IObjectWithKey[]);
+    if (selectedKey) {
+      this.state.selection.setKeySelected(selectedKey, true, false);
+    }
     this._treeMode.setItems(items);
   }
 
   componentWillReceiveProps(newProps: ITreeProps) {
-    if (newProps.items !== this.props.items) {
+    console.log('tree componentWillReceiveProps', newProps);
+    if (newProps.items !== this.props.items || newProps.selectedKey !== this.props.selectedKey) {
       this._treeMode.setItems(newProps.items);
+      this.state.selection.setItems(newProps.items, false);
+      newProps.selectedKey && this.state.selection.setKeySelected(newProps.selectedKey, true, true);
     }
   }
 
@@ -88,12 +95,14 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   ): React.ReactElement<{}> {
     const { className, theme, styles, visualCheckbox, onRenderItem, selectionMode } = this.props;
     const { selection } = this.state;
-    const classNames = getClassNames(styles!, {
-      theme: theme!,
-      className: className
-    });
+
     let index = this._treeMode.getItemIndex(item);
     let itemSelected = selection.isIndexSelected(index);
+    const classNames = getClassNames(styles!, {
+      theme: theme!,
+      className: className,
+      treeNodeSelected: itemSelected
+    });
     return (
       <div
         key={index}
@@ -106,13 +115,13 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
         {isLeaf && <div className={classNames.leafHead} />}
         {!isLeaf &&
           isExpanded && (
-            <div className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
+            <div className={classNames.nodeArrow} onClick={this._onExpandClicked.bind(this, item)}>
               <Icon iconName="CaretSolid" />
             </div>
           )}
         {!isLeaf &&
           !isExpanded && (
-            <div className={classNames.nodeArrow} onClick={this._onExpandClicled.bind(this, item)}>
+            <div className={classNames.nodeArrow} onClick={this._onExpandClicked.bind(this, item)}>
               <Icon iconName="CaretHollow" />
             </div>
           )}
@@ -153,7 +162,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
     );
   }
 
-  private _onExpandClicled(item: ITreeItem, ev: React.MouseEvent<HTMLElement>): void {
+  private _onExpandClicked(item: ITreeItem, ev: React.MouseEvent<HTMLElement>): void {
     const { onLinkExpandClick } = this.props;
 
     if (onLinkExpandClick) {
@@ -182,6 +191,12 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   private _onSelectionChanged = (): void => {
     if (this._hasMounted) {
       this.forceUpdate();
+
+      let { onSelectChange } = this.props;
+      let { selection } = this.state;
+      if (onSelectChange) {
+        onSelectChange(selection.getSelection());
+      }
     }
   };
 }

@@ -15,17 +15,16 @@ export interface ITreeMode<T extends ITreeItem> {
   getChild: (parent: T) => T[];
   isExpanded: (item: T) => boolean;
   setItems: (items: ITreeItem[]) => void;
-  getId: (item: ITreeItem) => string | number;
+  getId: (item: ITreeItem) => string;
   getParent: (item: ITreeItem) => ITreeItem | null;
 }
 
 export interface ITreeProps {
   items: ITreeItem[];
-  getMode?: () => ITreeMode<ITreeItem>;
+  mode?: ITreeMode<ITreeItem>;
   componentRef?: (ref: ITree | null) => void | ITree;
   onRenderItem: (item: ITreeItem, isLeaf?: boolean, isExpanded?: boolean) => React.ReactNode;
-  initialSelectedKey?: string;
-  selectedKey?: string;
+  selectedKey?: string | null;
   className?: string;
   theme?: ITheme;
   styles?: IStyleFunctionOrObject<ITreeStyleProps, ITreeStyles>;
@@ -41,6 +40,7 @@ export interface ITreeProps {
 export interface ITreeStyleProps {
   theme: ITheme;
   className?: string;
+  treeNodeSelected?: boolean;
 }
 
 export interface ITreeStyles {

@@ -2,13 +2,7 @@ import * as React from 'react';
 import { TooltipHost, TooltipDelay } from 'office-ui-fabric-react/lib/Tooltip';
 import { DirectionalHint } from 'office-ui-fabric-react/lib/common/DirectionalHint';
 import * as styles from './tabs.scss';
-import {
-  BaseComponent,
-  divProperties,
-  getNativeProps,
-  customizable,
-  classNamesFunction
-} from 'office-ui-fabric-react/lib/Utilities';
+import { BaseComponent, customizable, classNamesFunction } from 'office-ui-fabric-react/lib/Utilities';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faFile } from '@fortawesome/free-solid-svg-icons';
 

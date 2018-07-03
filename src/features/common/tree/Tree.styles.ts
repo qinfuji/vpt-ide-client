@@ -9,7 +9,7 @@ const GlobalClassNames = {
 };
 
 export const getStyles = (props: ITreeStyleProps): ITreeStyles => {
-  const { theme, className } = props;
+  const { theme, className, treeNodeSelected } = props;
 
   const classNames = getGlobalClassNames(GlobalClassNames, theme);
 
@@ -34,6 +34,9 @@ export const getStyles = (props: ITreeStyleProps): ITreeStyles => {
             backgroundColor: theme.palette.neutralLighter
           }
         }
+      },
+      treeNodeSelected && {
+        backgroundColor: theme.palette.neutralLighter
       }
     ],
     treeGroup: [],

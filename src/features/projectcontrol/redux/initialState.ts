@@ -1,6 +1,6 @@
 import { IProjectInfo, IFile } from '../../../common/types';
 
-export interface IProjectControlInitState {
+export interface IProjectControlState {
   //获取项目数据的状态
   fetchProjectDataStatus: string | null;
   //项目信息
@@ -11,7 +11,7 @@ export interface IProjectControlInitState {
   activeTab: IFile | null | undefined;
 }
 
-const initialState: IProjectControlInitState = {
+const initialState: IProjectControlState = {
   //项目信息加载状态
   fetchProjectDataStatus: null,
   //当前项目信息

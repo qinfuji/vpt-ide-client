@@ -3,7 +3,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { setUser } from './redux/actions';
 import TopMenu from './TopMenu';
-import ProjectControl from '../projectcontrol/ProjectControl';
 import Login from './Login';
 import * as styles from './styles/App.scss';
 import SelectProject from '../selectproject/SelectProject';
