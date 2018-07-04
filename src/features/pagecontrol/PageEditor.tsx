@@ -62,15 +62,15 @@ export interface PageEditorState {
   /**
    * 当前页面的outline
    */
-  outline?: IPageOutlineItem[];
+  outline?: IPageOutlineItem[] | null;
   /**
    * 当前选择组件的编辑属性列表
    */
-  editorProperty?: IEditorProperty[];
+  editorProperty?: IEditorProperty[] | null;
   /**
    * 当前选择的组件
    */
-  selectedComponent?: IPageOutlineItem;
+  selectedComponent?: IPageOutlineItem | null;
 }
 
 export default class PageEditor extends BaseComponent<PageEditorProps, PageEditorState> {
@@ -85,19 +85,49 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
   }
 
   componentDidMount() {
-    //TODO 这里开始注册postMessage事件
+    let { activeFile } = this.props;
+    if (activeFile) {
+      this._reloadIframe(activeFile);
+    }
+  }
+
+  private _reloadIframe(activeFile?: IFile) {
+    this._destoryChild();
+
+    if (!activeFile) return;
     this._handshake = new Postmate({
       container: this._iframeDiv.current,
-      url: 'http://dnd2.vpt.com:4000/children.html'
+      url: 'http://dnd2.vpt.com:4000/children.html?path=' + encodeURIComponent(activeFile.path)
     });
 
     this._handshake.then(child => {
-      //child.get('rectangle', this._receivePageOutline);
       console.log('complete handshake');
       this._childEditor = child;
       child.on('pageoutline', this._receivePageOutline);
-      child.on('componentSelected', this._receiveComponentSelected);
+      child.on('componentSelected', this._receiveChildComponentSelected);
     });
+
+    this.setState({
+      outline: null,
+      editorProperty: null,
+      selectedComponent: null
+    });
+  }
+
+  private _destoryChild() {
+    if (this._childEditor) {
+      this._childEditor.destroy();
+    }
+  }
+
+  componentWillUnmount() {
+    this._destoryChild();
+  }
+
+  componentWillReceiveProps(newprops: PageEditorProps) {
+    if (newprops.activeFile != this.props.activeFile) {
+      this._reloadIframe(newprops.activeFile);
+    }
   }
 
   private _receivePageOutline = pageoutline => {
@@ -106,7 +136,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
     });
   };
 
-  private _receiveComponentSelected = selectdComponent => {
+  private _receiveChildComponentSelected = selectdComponent => {
     this.setState({
       selectedComponent: selectdComponent
     });
@@ -117,10 +147,6 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
    */
   private _outlineChanged = (items: IPageOutlineItem[]) => {
     this._childEditor.call('componentSelectChanged', {});
-    console.log('_outlineChanged');
-    this.setState({
-      selectedComponent: items[0]
-    });
   };
 
   private _propertyChanged(item: IEditorProperty) {}
@@ -147,13 +173,13 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
                 <Panel title="Pageoutline">
                   <Tree
                     mode={this._outlineMode}
-                    visualCheckbox={true}
-                    selectedKey={selectedComponent ? this._outlineMode.getId(selectedComponent) : null}
+                    visualCheckbox={false}
+                    selectedKeys={selectedComponent ? this._outlineMode.getId(selectedComponent) : null}
                     selectionMode={SelectionMode.single}
                     items={(outline as ITreeItem[]) || []}
                     onRenderItem={this._renderOutlineItem}
                     styles={{ root: { margin: '10px 0 0 15px' } }}
-                    //onSelectChange={this._outlineChanged}
+                    onSelectChange={this._outlineChanged}
                   />
                 </Panel>
               </Pane>

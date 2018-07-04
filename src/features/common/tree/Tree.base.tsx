@@ -24,7 +24,7 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   constructor(props: ITreeProps) {
     super(props);
     this._hasMounted = false;
-    let { items, selectionMode = SelectionMode.single, mode, selectedKey } = this.props;
+    let { items, selectionMode = SelectionMode.single, mode, selectedKeys } = this.props;
     this._treeMode = mode ? mode : (new DefaultTreeMode() as any);
     this.state = {
       selection: new Selection({
@@ -37,19 +37,43 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
       nodeExpandStates: {}
     };
     this.state.selection.setItems(items as IObjectWithKey[]);
-    if (selectedKey) {
-      this.state.selection.setKeySelected(selectedKey, true, false);
+    if (selectedKeys) {
+      if (Array.isArray(selectedKeys)) {
+        selectedKeys.forEach(selectedKey => {
+          this.state.selection.setKeySelected(selectedKey, true, true);
+        });
+      } else {
+        this.state.selection.setKeySelected(selectedKeys, true, true);
+      }
     }
     this._treeMode.setItems(items);
   }
 
   componentWillReceiveProps(newProps: ITreeProps) {
-    console.log('tree componentWillReceiveProps', newProps);
-    if (newProps.items !== this.props.items || newProps.selectedKey !== this.props.selectedKey) {
-      this._treeMode.setItems(newProps.items);
-      this.state.selection.setItems(newProps.items, false);
-      newProps.selectedKey && this.state.selection.setKeySelected(newProps.selectedKey, true, true);
+    let { selectionMode = SelectionMode.single } = newProps;
+    this._treeMode.setItems(newProps.items);
+    let selection = new Selection({
+      getKey: item => {
+        return this._treeMode.getId(item);
+      },
+      selectionMode: selectionMode,
+      onSelectionChanged: this._onSelectionChanged
+    });
+    selection.setItems(newProps.items);
+    let selectedKeys = newProps.selectedKeys;
+    if (selectedKeys) {
+      if (Array.isArray(selectedKeys)) {
+        selectedKeys.forEach(selectedKey => {
+          selection.setKeySelected(selectedKey, true, true);
+        });
+      } else {
+        selection.setKeySelected(selectedKeys, true, true);
+      }
     }
+    this.setState({
+      selection: selection,
+      nodeExpandStates: {}
+    });
   }
 
   public componentDidMount(): void {
@@ -189,9 +213,9 @@ export class TreeBase extends BaseComponent<ITreeProps, ITreeState> implements I
   };
 
   private _onSelectionChanged = (): void => {
+    console.log('_onSelectionChanged');
     if (this._hasMounted) {
       this.forceUpdate();
-
       let { onSelectChange } = this.props;
       let { selection } = this.state;
       if (onSelectChange) {

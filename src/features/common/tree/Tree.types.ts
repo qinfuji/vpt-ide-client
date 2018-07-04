@@ -24,7 +24,7 @@ export interface ITreeProps {
   mode?: ITreeMode<ITreeItem>;
   componentRef?: (ref: ITree | null) => void | ITree;
   onRenderItem: (item: ITreeItem, isLeaf?: boolean, isExpanded?: boolean) => React.ReactNode;
-  selectedKey?: string | null;
+  selectedKeys?: string | string[] | null;
   className?: string;
   theme?: ITheme;
   styles?: IStyleFunctionOrObject<ITreeStyleProps, ITreeStyles>;
