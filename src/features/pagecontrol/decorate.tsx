@@ -13,7 +13,7 @@ type Options = {
 type State = {};
 
 export function decorate(options: Options, Component: any): any {
-  var storeKey = options.store || 'store';
+  var storeKey = options.store || 'pageTreeStore';
   class Wrapper extends React.Component<{}, State> {
     static contextTypes = {
       [storeKey]: PropTypes.object

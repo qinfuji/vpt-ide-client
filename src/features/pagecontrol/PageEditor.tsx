@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as PropTypes from 'prop-types';
 import { BaseComponent, createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { SplitPane, Pane } from 'vpt-components';
 import { IFile, IProjectBaseInfo } from '../../common/types';
@@ -14,21 +15,31 @@ export interface PageEditorProps {
   componentRef?: (component: PageEditor | null) => void;
 }
 
-export default class PageEditor extends BaseComponent<PageEditorProps> {
+type State = {
+  store?: Store | null;
+};
+
+export default class PageEditor extends BaseComponent<PageEditorProps, State> {
+  static childContextTypes = {
+    pageTreeStore: PropTypes.object
+  };
+
   private _iframeDiv: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
   private _handshake: Postmate;
   private _childEditor: any;
   private _bridge: Bridge | null;
-  private _store: Store | null;
+  //private _store: Store | null;
 
   constructor(props: PageEditorProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      store: null
+    };
   }
 
   getChildContext(): any {
     return {
-      store: this._store
+      pageTreeStore: this.state.store
     };
   }
 
@@ -60,7 +71,9 @@ export default class PageEditor extends BaseComponent<PageEditorProps> {
         }
       };
       this._bridge = new Bridge(wall);
-      this._store = new Store(this._bridge);
+      this.setState({
+        store: new Store(this._bridge)
+      });
     });
   }
 
@@ -74,7 +87,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps> {
     this._destoryChild();
     this._childEditor = null;
     this._bridge = null;
-    this._store = null;
+    //this._store = null;
   }
 
   componentWillReceiveProps(newprops: PageEditorProps) {
@@ -88,6 +101,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps> {
     if (!activeFile) {
       return null;
     }
+    let { store } = this.state;
     return (
       <div className={styles.root}>
         <SplitPane split="vertical">
@@ -97,9 +111,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps> {
           <Pane initialSize="355px" minSize="220px">
             <SplitPane split="horizontal">
               <Pane initialSize="380px" minSize="220px">
-                <Panel title="Pageoutline">
-                  <TreeView />
-                </Panel>
+                <Panel title="Pageoutline">{store && <TreeView />}</Panel>
               </Pane>
               <Pane>
                 <Panel title="Properties" />
