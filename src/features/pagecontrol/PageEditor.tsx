@@ -2,86 +2,34 @@ import * as React from 'react';
 import { BaseComponent, createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { SplitPane, Pane } from 'vpt-components';
 import { IFile, IProjectBaseInfo } from '../../common/types';
-//import { Tree, ITreeItem, ITreeMode } from '../common';
-import { IEditorProperty, IPageOutlineItem, IPageOutlineItemType } from './types';
 import * as styles from './styles/PageEditor.scss';
 import Postmate from 'postmate';
 import { Panel } from '../common/Panel';
-import { ITreeMode, Tree, ITreeItem } from '../common/tree';
-import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
-
-class OutlineMode implements ITreeMode<IPageOutlineItem> {
-  private _items: IPageOutlineItem[];
-
-  isLeaf(item: IPageOutlineItem): boolean {
-    return item.type == IPageOutlineItemType.NORMAL;
-  }
-  getItem(index: number): IPageOutlineItem {
-    return this._items[index];
-  }
-  getItemIndex(item: IPageOutlineItem): number {
-    return this._items.indexOf(item);
-  }
-  getRoot(): IPageOutlineItem[] {
-    return this._items.filter(item => {
-      return item.parent === null || item.parent === undefined;
-    });
-  }
-  getChild(parent: IPageOutlineItem): IPageOutlineItem[] {
-    return this._items.filter(item => {
-      return item.parent == parent.id;
-    });
-  }
-  isExpanded(item: IPageOutlineItem): boolean {
-    return true;
-  }
-  setItems(items: IPageOutlineItem[]): void {
-    this._items = items;
-  }
-  getId(item: IPageOutlineItem): string {
-    return item.id;
-  }
-  getParent(item: IPageOutlineItem): IPageOutlineItem | null {
-    for (let index = 0; index < this._items.length; index++) {
-      const element = this._items[index];
-      if (element.id == item.parent) {
-        return element;
-      }
-    }
-    return null;
-  }
-}
-
+import { Bridge, Wall, PayloadType } from './agent/Bridge';
+import { Store } from './pagetree/Store';
+import TreeView from './pagetree/TreeView';
 export interface PageEditorProps {
   activeFile?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
   componentRef?: (component: PageEditor | null) => void;
 }
 
-export interface PageEditorState {
-  /**
-   * 当前页面的outline
-   */
-  outline?: IPageOutlineItem[] | null;
-  /**
-   * 当前选择组件的编辑属性列表
-   */
-  editorProperty?: IEditorProperty[] | null;
-  /**
-   * 当前选择的组件
-   */
-  selectedComponent?: IPageOutlineItem | null;
-}
-
-export default class PageEditor extends BaseComponent<PageEditorProps, PageEditorState> {
+export default class PageEditor extends BaseComponent<PageEditorProps> {
   private _iframeDiv: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
   private _handshake: Postmate;
   private _childEditor: any;
-  private _outlineMode = new OutlineMode();
+  private _bridge: Bridge | null;
+  private _store: Store | null;
 
   constructor(props: PageEditorProps) {
     super(props);
     this.state = {};
+  }
+
+  getChildContext(): any {
+    return {
+      store: this._store
+    };
   }
 
   componentDidMount() {
@@ -93,24 +41,26 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
 
   private _reloadIframe(activeFile?: IFile) {
     this._destoryChild();
-
     if (!activeFile) return;
     this._handshake = new Postmate({
       container: this._iframeDiv.current,
-      url: 'http://dnd2.vpt.com:4000/children.html?path=' + encodeURIComponent(activeFile.path)
+      url: 'http://localhost:8080/?path=' + encodeURIComponent(activeFile.path)
     });
 
     this._handshake.then(child => {
-      console.log('complete handshake');
       this._childEditor = child;
-      child.on('pageoutline', this._receivePageOutline);
-      child.on('componentSelected', this._receiveChildComponentSelected);
-    });
-
-    this.setState({
-      outline: null,
-      editorProperty: null,
-      selectedComponent: null
+      let wall: Wall = {
+        listen: fn => {
+          child.on('message', data => {
+            fn(data);
+          });
+        },
+        send: (data: PayloadType) => {
+          child.call('message', data);
+        }
+      };
+      this._bridge = new Bridge(wall);
+      this._store = new Store(this._bridge);
     });
   }
 
@@ -122,44 +72,21 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
 
   componentWillUnmount() {
     this._destoryChild();
+    this._childEditor = null;
+    this._bridge = null;
+    this._store = null;
   }
 
   componentWillReceiveProps(newprops: PageEditorProps) {
-    if (newprops.activeFile != this.props.activeFile) {
+    if (newprops.activeFile && newprops.activeFile != this.props.activeFile) {
       this._reloadIframe(newprops.activeFile);
     }
   }
 
-  private _receivePageOutline = pageoutline => {
-    this.setState({
-      outline: pageoutline
-    });
-  };
-
-  private _receiveChildComponentSelected = selectdComponent => {
-    this.setState({
-      selectedComponent: selectdComponent
-    });
-  };
-
-  /**
-   *
-   */
-  private _outlineChanged = (items: IPageOutlineItem[]) => {
-    this._childEditor.call('componentSelectChanged', {});
-  };
-
-  private _propertyChanged(item: IEditorProperty) {}
-
   render() {
     let { activeFile } = this.props;
-    let { outline, selectedComponent } = this.state;
     if (!activeFile) {
       return null;
-    }
-    if (selectedComponent) {
-      console.log('render selectedComponent', selectedComponent);
-      console.log(this._outlineMode.getId(selectedComponent));
     }
     return (
       <div className={styles.root}>
@@ -171,16 +98,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
             <SplitPane split="horizontal">
               <Pane initialSize="380px" minSize="220px">
                 <Panel title="Pageoutline">
-                  <Tree
-                    mode={this._outlineMode}
-                    visualCheckbox={false}
-                    selectedKeys={selectedComponent ? this._outlineMode.getId(selectedComponent) : null}
-                    selectionMode={SelectionMode.single}
-                    items={(outline as ITreeItem[]) || []}
-                    onRenderItem={this._renderOutlineItem}
-                    styles={{ root: { margin: '10px 0 0 15px' } }}
-                    onSelectChange={this._outlineChanged}
-                  />
+                  <TreeView />
                 </Panel>
               </Pane>
               <Pane>
@@ -192,8 +110,4 @@ export default class PageEditor extends BaseComponent<PageEditorProps, PageEdito
       </div>
     );
   }
-
-  private _renderOutlineItem = (item: IPageOutlineItem): React.ReactNode => {
-    return <div>{item.name}</div>;
-  };
 }

@@ -1,6 +1,6 @@
 import { PageControl } from '../pagecontrol';
 import Welcome from '../app/Welcome';
-import { ProjectControl } from './';
+import { ProjectControl } from '.';
 
 export default {
   path: '/project',

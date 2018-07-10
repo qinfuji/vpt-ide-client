@@ -1,5 +1,5 @@
 {
-  "extends": ["office-ui-fabric-react-tslint1"],
+  "extends": ["office-ui-fabric-react-tslint"],
   "rules": {
     "deprecation": false,
     "jsx-ban-props": false,

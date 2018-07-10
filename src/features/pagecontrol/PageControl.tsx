@@ -15,7 +15,7 @@ export interface PageControlProps {
 class PageControl extends BaseComponent<PageControlProps> {
   render() {
     let { activeFile, projectBaseInfo } = this.props;
-    if (!activeFile && !projectBaseInfo) {
+    if (!activeFile || !projectBaseInfo) {
       return null;
     }
     return <PageEditor activeFile={activeFile} projectBaseInfo={projectBaseInfo} />;
