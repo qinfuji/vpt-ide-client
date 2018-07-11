@@ -51,7 +51,6 @@ export class Store extends EventEmitter {
       if (!this.selected) {
         this.selected = this.skipWrapper(id);
         this.emit('selected');
-        //this.emit('breadcrumbHead');
         this._bridge.send('selected', this.selected);
       }
       this.emit('roots');
@@ -59,6 +58,10 @@ export class Store extends EventEmitter {
     this._bridge.on('mount', data => this._mountComponent(data));
     this._bridge.on('update', data => this._updateComponent(data));
     this._bridge.on('unmount', id => this._unmountComponent(id));
+
+    this._establishConnection();
+    this._eventQueue = [];
+    this._eventTimer = null;
   }
 
   emit(event: string): boolean {
@@ -275,5 +278,25 @@ export class Store extends EventEmitter {
   toggleCollapse(id: ElementID) {
     this._nodes = this._nodes.updateIn([id, 'collapsed'], c => !c);
     this.emit(id);
+  }
+
+  _establishConnection() {
+    var tries = 0;
+    var requestInt;
+    this._bridge.once('capabilities', capabilities => {
+      clearInterval(requestInt);
+      this.emit('connected');
+    });
+    this._bridge.send('requestCapabilities');
+    requestInt = setInterval(() => {
+      tries += 1;
+      if (tries > 100) {
+        console.error('failed to connect');
+        clearInterval(requestInt);
+        this.emit('connection failed');
+        return;
+      }
+      this._bridge.send('requestCapabilities');
+    }, 500);
   }
 }

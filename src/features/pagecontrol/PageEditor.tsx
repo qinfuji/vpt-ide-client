@@ -8,6 +8,8 @@ import Postmate from 'postmate';
 import { Panel } from '../common/Panel';
 import { Bridge, Wall, PayloadType } from './agent/Bridge';
 import { Store } from './pagetree/Store';
+import { Store as ThemeStore } from './pagetree/themes/Store';
+import * as Themes from './pagetree/themes/Themes';
 import TreeView from './pagetree/TreeView';
 export interface PageEditorProps {
   activeFile?: IFile;
@@ -21,14 +23,15 @@ type State = {
 
 export default class PageEditor extends BaseComponent<PageEditorProps, State> {
   static childContextTypes = {
-    pageTreeStore: PropTypes.object
+    pageTreeStore: PropTypes.object,
+    theme: PropTypes.object.isRequired
   };
 
   private _iframeDiv: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
   private _handshake: Postmate;
   private _childEditor: any;
   private _bridge: Bridge | null;
-  //private _store: Store | null;
+  private _themeStore: ThemeStore | null;
 
   constructor(props: PageEditorProps) {
     super(props);
@@ -39,7 +42,8 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
 
   getChildContext(): any {
     return {
-      pageTreeStore: this.state.store
+      pageTreeStore: this.state.store,
+      theme: (this._themeStore && this._themeStore.theme) || Themes.Tomorrow
     };
   }
 
@@ -60,20 +64,31 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
 
     this._handshake.then(child => {
       this._childEditor = child;
-      let wall: Wall = {
-        listen: fn => {
-          child.on('message', data => {
-            fn(data);
-          });
-        },
-        send: (data: PayloadType) => {
-          child.call('message', data);
-        }
-      };
-      this._bridge = new Bridge(wall);
-      this.setState({
-        store: new Store(this._bridge)
+      child.on('childReady', () => {
+        console.log('receive childready');
+        this._createDevTool(child);
       });
+    });
+  }
+
+  private _createDevTool(child) {
+    this.setState({
+      store: null
+    });
+    let wall: Wall = {
+      listen: fn => {
+        this._childEditor.on('message', data => {
+          console.log(data);
+          fn(data);
+        });
+      },
+      send: (data: PayloadType) => {
+        this._childEditor.call('message', data);
+      }
+    };
+    this._bridge = new Bridge(wall);
+    this.setState({
+      store: new Store(this._bridge)
     });
   }
 
