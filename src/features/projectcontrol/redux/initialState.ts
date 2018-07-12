@@ -6,9 +6,9 @@ export interface IProjectControlState {
   //项目信息
   projectInfo: IProjectInfo | undefined | null;
   //当前项目打来的文件
-  openTabs: IFile[] | null | undefined;
+  openedFiles: IFile[] | null | undefined;
   //当前活动的文件
-  activeTab: IFile | null | undefined;
+  activedFile: IFile | null | undefined;
 }
 
 const initialState: IProjectControlState = {
@@ -17,9 +17,9 @@ const initialState: IProjectControlState = {
   //当前项目信息
   projectInfo: null,
 
-  openTabs: null,
+  openedFiles: null,
 
-  activeTab: null
+  activedFile: null
 };
 
 export default initialState;

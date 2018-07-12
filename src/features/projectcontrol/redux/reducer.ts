@@ -1,6 +1,6 @@
 import { reducer as fetchProjectData } from './fetchProjectData';
 import initialState, { IProjectControlState } from './initialState';
-import { reducer as tabMgr } from './openTabs';
+import { reducer as tabMgr } from './openFiles';
 const reducers = [fetchProjectData, tabMgr];
 
 export default function reducer(state: IProjectControlState = initialState, action: any) {

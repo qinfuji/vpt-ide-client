@@ -56,6 +56,7 @@ class Node extends React.Component<PropsType, StateType> {
 
   componentDidMount() {
     if (this.props.selected) {
+      this.ensureInView();
       // This is done lazily so we only have one subscription at a time at most.
       // We'll unsubscribe and resubscribe depending on props.selected in componentDidUpdate().
       this.subscribeToWindowFocus();
@@ -64,6 +65,7 @@ class Node extends React.Component<PropsType, StateType> {
 
   componentDidUpdate(prevProps) {
     if (this.props.selected && !prevProps.selected) {
+      this.ensureInView();
       this.subscribeToWindowFocus();
     } else if (!this.props.selected && prevProps.selected) {
       // Losing selection.
@@ -139,6 +141,14 @@ class Node extends React.Component<PropsType, StateType> {
   _handleWindowBlur = () => {
     this.setState({ isWindowFocused: false });
   };
+
+  ensureInView() {
+    var node = this.props.isBottomTagSelected ? this._tail : this._head;
+    if (!node) {
+      return;
+    }
+    this.context.scrollTo(node);
+  }
 
   render() {
     const { theme } = this.context;

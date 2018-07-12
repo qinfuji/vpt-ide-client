@@ -1,5 +1,5 @@
 export function getItem(key: string): string | null {
-  let result = null;
+  let result: any | null = null;
   try {
     result = window.sessionStorage.getItem(key);
   } catch (e) {}

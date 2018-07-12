@@ -7,24 +7,25 @@ import PageEditor from './PageEditor';
 
 export interface PageControlProps {
   actions?: any;
-  activeFile?: IFile;
+  activedFile?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
   componentRef?: (component: PageControl | null) => void;
 }
 
 class PageControl extends BaseComponent<PageControlProps> {
   render() {
-    let { activeFile, projectBaseInfo } = this.props;
-    if (!activeFile || !projectBaseInfo) {
+    let { activedFile, projectBaseInfo } = this.props;
+    console.log(this.props);
+    if (!activedFile || !projectBaseInfo) {
       return null;
     }
-    return <PageEditor activeFile={activeFile} projectBaseInfo={projectBaseInfo} />;
+    return <PageEditor activeFile={activedFile} projectBaseInfo={projectBaseInfo} />;
   }
 }
 
 function mapStateToProps(state: any): PageControlProps {
   return {
-    activeFile: state.projectControl.activeTab || null,
+    activedFile: state.projectControl.activedFile || null,
     projectBaseInfo:
       state.projectControl && state.projectControl.projectInfo && state.projectControl.projectInfo.baseInfo
   };

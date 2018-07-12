@@ -16,7 +16,7 @@ type ContextMenu = {
 export class Store extends EventEmitter {
   private _bridge: Bridge;
   private _nodes: Map<string, any>;
-  private _parents: Map<ElementID, ElementID>;
+  _parents: Map<ElementID, ElementID>;
   private _nodesByName: Map<string, Set<ElementID>>;
   private _eventQueue: Array<string>;
   private _eventTimer?: any;
@@ -59,6 +59,22 @@ export class Store extends EventEmitter {
     this._bridge.on('update', data => this._updateComponent(data));
     this._bridge.on('unmount', id => this._unmountComponent(id));
 
+    //this._bridge.on('setInspectEnabled', data => this.setInspectEnabled(data));
+    this._bridge.on('select', ({ id, quiet, offsetFromLeaf = 0 }) => {
+      // Backtrack if we want to skip leaf nodes
+      while (offsetFromLeaf > 0) {
+        offsetFromLeaf--;
+        var pid = this._parents.get(id);
+        if (pid) {
+          id = pid;
+        } else {
+          break;
+        }
+      }
+      this._revealDeep(id);
+      this.selectTop(this.skipWrapper(id), quiet);
+    });
+
     this._establishConnection();
     this._eventQueue = [];
     this._eventTimer = null;
@@ -87,7 +103,7 @@ export class Store extends EventEmitter {
     this._eventQueue = [];
   }
 
-  private skipWrapper(id: ElementID, up?: boolean, end?: boolean): ElementID | undefined {
+  skipWrapper(id: ElementID, up?: boolean, end?: boolean): ElementID | undefined {
     if (!id) {
       return undefined;
     }
@@ -188,7 +204,7 @@ export class Store extends EventEmitter {
     this._bridge.send('scrollToNode', id);
   }
 
-  _toggleDeepChildren(id: ElementID, value: boolean) {
+  private _toggleDeepChildren(id: ElementID, value: boolean) {
     var node = this._nodes.get(id);
     if (!node) {
       return;
@@ -280,6 +296,14 @@ export class Store extends EventEmitter {
     this.emit(id);
   }
 
+  toggleAllChildrenNodes(value: boolean) {
+    var id = this.selected;
+    if (!id) {
+      return;
+    }
+    this._toggleDeepChildren(id, value);
+  }
+
   _establishConnection() {
     var tries = 0;
     var requestInt;
@@ -298,5 +322,17 @@ export class Store extends EventEmitter {
       }
       this._bridge.send('requestCapabilities');
     }, 500);
+  }
+
+  _revealDeep(id: ElementID) {
+    var pid = this._parents.get(id);
+    while (pid) {
+      if (this._nodes.getIn([pid, 'collapsed'])) {
+        this._nodes = this._nodes.setIn([pid, 'collapsed'], false);
+        this.emit(pid);
+      }
+
+      pid = this._parents.get(pid);
+    }
   }
 }

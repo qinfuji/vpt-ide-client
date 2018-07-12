@@ -3,12 +3,12 @@ import * as React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { Tabs, ITabMode, ITabsProps } from '../common/Tabs';
-import { activeTab, closeTab } from './redux/openTabs';
+import { activeFile, closeFile } from './redux/openFiles';
 import { IFile, IProjectBaseInfo } from '../../common/types';
 
 export interface OpenFileTabsProps {
   items?: IFile[] | null | undefined;
-  activeTab?: IFile;
+  activedFile?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
   actions?: any;
 }
@@ -40,11 +40,11 @@ class OpenFileTabs extends React.Component<OpenFileTabsProps> {
   }
 
   render() {
-    let { items, activeTab } = this.props;
+    let { items, activedFile } = this.props;
     return (
       <Tabs
         items={items || []}
-        activeTab={activeTab}
+        activeTab={activedFile}
         mode={this._mode}
         onTabClosed={this._onTabClosed.bind(this)}
         onTabChanged={this._onTabChanged.bind(this)}
@@ -53,26 +53,26 @@ class OpenFileTabs extends React.Component<OpenFileTabsProps> {
   }
 
   private _onTabClosed(item: IFile, index: number) {
-    let { closeTab } = this.props.actions;
+    let { closeFile } = this.props.actions;
     let { projectBaseInfo } = this.props;
-    if (projectBaseInfo && closeTab) {
-      closeTab(projectBaseInfo.id, item, index);
+    if (projectBaseInfo && closeFile) {
+      closeFile(projectBaseInfo.id, item, index);
     }
   }
 
   private _onTabChanged(item: IFile, index: number) {
-    let { activeTab } = this.props.actions;
+    let { activeFile } = this.props.actions;
     let { projectBaseInfo } = this.props;
-    if (closeTab && projectBaseInfo) {
-      activeTab(projectBaseInfo.id, item, index);
+    if (closeFile && projectBaseInfo) {
+      activeFile(projectBaseInfo.id, item, index);
     }
   }
 }
 
 function mapStateToProps(state: any): OpenFileTabsProps {
   return {
-    items: state.projectControl.openTabs,
-    activeTab: state.projectControl.activeTab,
+    items: state.projectControl.openedFiles,
+    activedFile: state.projectControl.activedFile,
     projectBaseInfo:
       state.projectControl && state.projectControl.projectInfo && state.projectControl.projectInfo.baseInfo
   };
@@ -80,7 +80,7 @@ function mapStateToProps(state: any): OpenFileTabsProps {
 
 function mapDispatchToProps(dispatch: Dispatch): OpenFileTabsProps {
   return {
-    actions: bindActionCreators({ activeTab, closeTab }, dispatch)
+    actions: bindActionCreators({ activeFile, closeFile }, dispatch)
   };
 }
 export default connect<OpenFileTabsProps>(

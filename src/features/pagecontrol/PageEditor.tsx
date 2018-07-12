@@ -11,6 +11,9 @@ import { Store } from './pagetree/Store';
 import { Store as ThemeStore } from './pagetree/themes/Store';
 import * as Themes from './pagetree/themes/Themes';
 import TreeView from './pagetree/TreeView';
+import { keyboardNav } from './pagetree/keyboardNav';
+
+import { PropertiesEditor } from './propseditor';
 export interface PageEditorProps {
   activeFile?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
@@ -32,6 +35,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
   private _childEditor: any;
   private _bridge: Bridge | null;
   private _themeStore: ThemeStore | null;
+  private _keyListener: (e: React.KeyboardEvent) => void;
 
   constructor(props: PageEditorProps) {
     super(props);
@@ -72,6 +76,9 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
   }
 
   private _createDevTool(child) {
+    if (this._keyListener) {
+      window.removeEventListener('keydown', this._keyListener as any);
+    }
     this.setState({
       store: null
     });
@@ -87,8 +94,12 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
       }
     };
     this._bridge = new Bridge(wall);
+    let _store = new Store(this._bridge);
+    this._keyListener = keyboardNav(_store, window);
+    window.addEventListener('keydown', this._keyListener as any);
+
     this.setState({
-      store: new Store(this._bridge)
+      store: _store
     });
   }
 
@@ -129,7 +140,9 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
                 <Panel title="Pageoutline">{store && <TreeView />}</Panel>
               </Pane>
               <Pane>
-                <Panel title="Properties" />
+                <Panel title="Properties">
+                  <PropertiesEditor />
+                </Panel>
               </Pane>
             </SplitPane>
           </Pane>

@@ -14,16 +14,26 @@ export interface IPanelState {
 
 export interface IPanelProps {
   icon?: string;
-  title: string;
+  title?: string;
   toolbtns?: IPanelToolButton[];
   showContent?: boolean;
 }
 
 export class Panel extends React.Component<IPanelProps> {
   render() {
-    let { icon, title, toolbtns, showContent = true } = this.props;
+    let { showContent = true } = this.props;
     return (
       <div className={styles.root}>
+        {this._panHead()}
+        <div className={styles.content}>{showContent && this.props.children}</div>
+      </div>
+    );
+  }
+
+  private _panHead(): React.ReactNode | null {
+    let { icon, title, toolbtns } = this.props;
+    if (title) {
+      return (
         <div className={styles.head}>
           <div className={styles.title}>
             {icon ? <Icon iconName={icon} /> : <Icon iconName="CaretHollow" />}
@@ -45,8 +55,9 @@ export class Panel extends React.Component<IPanelProps> {
               })}
           </div>
         </div>
-        <div className={styles.content}>{showContent && this.props.children}</div>
-      </div>
-    );
+      );
+    } else {
+      return null;
+    }
   }
 }

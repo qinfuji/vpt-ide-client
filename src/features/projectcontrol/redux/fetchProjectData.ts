@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 import { IProjectInfo } from '../../../common/types';
 import initialState, { IProjectControlState } from './initialState';
 import { FETCH_PROJECT_DATA_BEGIN, FETCH_PROJECT_DATA_SUCCESS, FETCH_PROJECT_DATA_FAILURE } from './constants';
-import { getOpenTabs, getActiveTab } from './openTabs';
+import { getOpenedFiles, getActivedFile } from './openFiles';
 
 export function fetchProjectData(id: string) {
   return (dispatch: Dispatch) => {
@@ -46,8 +46,8 @@ export function reducer(state: IProjectControlState = initialState, action: any)
         ...state,
         projectInfoFetchState: FETCH_PROJECT_DATA_SUCCESS,
         projectInfo: action.data as IProjectInfo,
-        openTabs: getOpenTabs((action.data as any).__id),
-        activeTab: getActiveTab((action.data as any).__id),
+        openedFiles: getOpenedFiles((action.data as any).__id),
+        activedFile: getActivedFile((action.data as any).__id),
         pageInfoFetchState: null,
         pageInfo: null,
         pageOutline: null,

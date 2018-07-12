@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { IProjectStructure, IFile, IProjectBaseInfo } from '../../common/types';
-import history from '../../common/history';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-//import Panel from './Panel';
 import { Panel } from '../common/Panel';
 import { SelectionMode } from 'office-ui-fabric-react/lib/Selection';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import * as stylesImport from './styles/ProjectExplorer.scss';
 import { Tree, ITreeItem } from '../common/tree';
 import { FsTreeMode } from './FsTreeMode';
-import { activeTab } from './redux/openTabs';
+import { activeFile } from './redux/openFiles';
 const styles: any = stylesImport;
 
 export interface IProjectExplorer {}
@@ -71,10 +69,9 @@ class ProjectExplorer extends React.Component<IProjectExplorerProps, IProjectExp
 
   private _fileSelect = (item: IFile) => {
     if (this._mode.isLeaf(item)) {
-      //history.push(`/project/file/${encodeURIComponent(item.path)}/${item.type}`);
-      let { activeTab } = this.props.actions;
+      let { activeFile } = this.props.actions;
       let { projectBaseInfo } = this.props;
-      activeTab(projectBaseInfo.id, item);
+      activeFile(projectBaseInfo.id, item);
     }
   };
 
@@ -109,7 +106,7 @@ function mapStateToProps(state: any) {
 
 function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    actions: bindActionCreators({ activeTab }, dispatch)
+    actions: bindActionCreators({ activeFile }, dispatch)
   };
 }
 export default connect(

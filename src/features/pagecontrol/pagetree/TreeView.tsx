@@ -86,7 +86,7 @@ var styles = {
     display: 'flex',
     flexDirection: 'column',
     minHeight: 0,
-
+    height: '100%',
     WebkitUserSelect: 'none',
     MozUserSelect: 'none',
     userSelect: 'none'
