@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
 import * as PropTypes from 'prop-types';
-import { BaseComponent, createRef } from 'office-ui-fabric-react/lib/Utilities';
 import { SplitPane, Pane } from 'vpt-components';
 import { IFile, IProjectBaseInfo } from '../../common/types';
 import * as styles from './styles/PageEditor.scss';
@@ -12,22 +13,24 @@ import { Store as ThemeStore } from './pagetree/themes/Store';
 import * as Themes from './pagetree/themes/Themes';
 import TreeView from './pagetree/TreeView';
 import { keyboardNav } from './pagetree/keyboardNav';
-
 import { PropertiesEditor } from './propseditor';
+import { fetchComponentEditInfo } from './propseditor/redux/fetchComponentEditInfo';
 export interface PageEditorProps {
-  activeFile?: IFile;
+  activedFile?: IFile;
   projectBaseInfo?: IProjectBaseInfo;
-  componentRef?: (component: PageEditor | null) => void;
+  actions?: any;
 }
 
 type State = {
   store?: Store | null;
 };
 
-export default class PageEditor extends BaseComponent<PageEditorProps, State> {
+export class PageEditor extends React.Component<PageEditorProps, State> {
   static childContextTypes = {
     pageTreeStore: PropTypes.object,
-    theme: PropTypes.object.isRequired
+    theme: PropTypes.object.isRequired,
+    activedFile: PropTypes.object.isRequired,
+    projectBaseInfo: PropTypes.object.isRequired
   };
 
   private _iframeDiv: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
@@ -47,23 +50,25 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
   getChildContext(): any {
     return {
       pageTreeStore: this.state.store,
-      theme: (this._themeStore && this._themeStore.theme) || Themes.Tomorrow
+      theme: (this._themeStore && this._themeStore.theme) || Themes.Tomorrow,
+      activedFile: this.props.activedFile,
+      projectBaseInfo: this.props.projectBaseInfo
     };
   }
 
   componentDidMount() {
-    let { activeFile } = this.props;
-    if (activeFile) {
-      this._reloadIframe(activeFile);
+    let { activedFile } = this.props;
+    if (activedFile) {
+      this._reloadIframe(activedFile);
     }
   }
 
-  private _reloadIframe(activeFile?: IFile) {
+  private _reloadIframe(activedFile?: IFile) {
     this._destoryChild();
-    if (!activeFile) return;
+    if (!activedFile) return;
     this._handshake = new Postmate({
       container: this._iframeDiv.current,
-      url: 'http://localhost:8080/?path=' + encodeURIComponent(activeFile.path)
+      url: 'http://localhost:8080/?path=' + encodeURIComponent(activedFile.path)
     });
 
     this._handshake.then(child => {
@@ -85,7 +90,6 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
     let wall: Wall = {
       listen: fn => {
         this._childEditor.on('message', data => {
-          console.log(data);
           fn(data);
         });
       },
@@ -97,7 +101,9 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
     let _store = new Store(this._bridge);
     this._keyListener = keyboardNav(_store, window);
     window.addEventListener('keydown', this._keyListener as any);
-
+    _store.on('selected', () => {
+      this._loadSleectedComponent();
+    });
     this.setState({
       store: _store
     });
@@ -109,22 +115,35 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
     }
   }
 
+  private _loadSleectedComponent() {
+    let { store } = this.state;
+    let { fetchComponentEditInfo } = this.props.actions;
+    if (store) {
+      let selected = store.selected;
+      if (selected) {
+        fetchComponentEditInfo(store.get(selected));
+      }
+    }
+  }
+
   componentWillUnmount() {
     this._destoryChild();
     this._childEditor = null;
     this._bridge = null;
-    //this._store = null;
+    if (this._keyListener) {
+      window.removeEventListener('keydown', this._keyListener as any);
+    }
   }
 
   componentWillReceiveProps(newprops: PageEditorProps) {
-    if (newprops.activeFile && newprops.activeFile != this.props.activeFile) {
-      this._reloadIframe(newprops.activeFile);
+    if (newprops.activedFile && newprops.activedFile != this.props.activedFile) {
+      this._reloadIframe(newprops.activedFile);
     }
   }
 
   render() {
-    let { activeFile } = this.props;
-    if (!activeFile) {
+    let { activedFile } = this.props;
+    if (!activedFile) {
       return null;
     }
     let { store } = this.state;
@@ -140,9 +159,7 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
                 <Panel title="Pageoutline">{store && <TreeView />}</Panel>
               </Pane>
               <Pane>
-                <Panel title="Properties">
-                  <PropertiesEditor />
-                </Panel>
+                <Panel title="Properties">{store && <PropertiesEditor />}</Panel>
               </Pane>
             </SplitPane>
           </Pane>
@@ -151,3 +168,21 @@ export default class PageEditor extends BaseComponent<PageEditorProps, State> {
     );
   }
 }
+
+function mapStateToProps(state: any): PageEditorProps {
+  return {
+    activedFile: state.projectControl.activedFile || null,
+    projectBaseInfo:
+      state.projectControl && state.projectControl.projectInfo && state.projectControl.projectInfo.baseInfo
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch): PageEditorProps {
+  return {
+    actions: bindActionCreators({ fetchComponentEditInfo }, dispatch)
+  };
+}
+export default connect<PageEditorProps, {}>(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageEditor);

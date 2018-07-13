@@ -113,3 +113,29 @@ export interface IProjectInfo {
   /** 项目结构 */
   structure: IProjectStructure;
 }
+
+export enum IPropertyCategroy {
+  LAYOUT,
+  CSS,
+  EVENT,
+  PROPERTY
+}
+
+export enum IPropertyType {
+  NUMBER,
+  STRING,
+  ARRAY,
+  OBJECT,
+  FUNCTION,
+  DATE,
+  COLOR
+}
+/**
+ * 组件编辑信息
+ */
+export interface IPropertyEditInfo {
+  name: string;
+  type: IPropertyType;
+  category: IPropertyCategroy;
+  defaultValue: Object;
+}

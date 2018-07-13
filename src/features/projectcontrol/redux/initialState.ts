@@ -1,4 +1,4 @@
-import { IProjectInfo, IFile } from '../../../common/types';
+import { IProjectInfo, IFile, IPropertyEditInfo } from '../../../common/types';
 
 export interface IProjectControlState {
   //获取项目数据的状态
@@ -9,6 +9,8 @@ export interface IProjectControlState {
   openedFiles: IFile[] | null | undefined;
   //当前活动的文件
   activedFile: IFile | null | undefined;
+
+  propsEditInfo: IPropertyEditInfo[] | null;
 }
 
 const initialState: IProjectControlState = {
@@ -19,7 +21,9 @@ const initialState: IProjectControlState = {
 
   openedFiles: null,
 
-  activedFile: null
+  activedFile: null,
+
+  propsEditInfo: null
 };
 
 export default initialState;

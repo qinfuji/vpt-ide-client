@@ -15,11 +15,10 @@ export interface PageControlProps {
 class PageControl extends BaseComponent<PageControlProps> {
   render() {
     let { activedFile, projectBaseInfo } = this.props;
-    console.log(this.props);
     if (!activedFile || !projectBaseInfo) {
       return null;
     }
-    return <PageEditor activeFile={activedFile} projectBaseInfo={projectBaseInfo} />;
+    return <PageEditor />;
   }
 }
 

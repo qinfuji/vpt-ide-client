@@ -4,6 +4,7 @@ import { IProjectInfo } from '../../../common/types';
 import initialState, { IProjectControlState } from './initialState';
 import { FETCH_PROJECT_DATA_BEGIN, FETCH_PROJECT_DATA_SUCCESS, FETCH_PROJECT_DATA_FAILURE } from './constants';
 import { getOpenedFiles, getActivedFile } from './openFiles';
+import { PageControl } from '../../pagecontrol';
 
 export function fetchProjectData(id: string) {
   return (dispatch: Dispatch) => {
@@ -47,18 +48,14 @@ export function reducer(state: IProjectControlState = initialState, action: any)
         projectInfoFetchState: FETCH_PROJECT_DATA_SUCCESS,
         projectInfo: action.data as IProjectInfo,
         openedFiles: getOpenedFiles((action.data as any).__id),
-        activedFile: getActivedFile((action.data as any).__id),
-        pageInfoFetchState: null,
-        pageInfo: null,
-        pageOutline: null,
-        componentPropsInfo: null
-      };
+        activedFile: getActivedFile((action.data as any).__id)
+      } as IProjectControlState;
     }
     case FETCH_PROJECT_DATA_FAILURE: {
       return {
         ...state,
         projectInfoFetchState: FETCH_PROJECT_DATA_FAILURE
-      };
+      } as IProjectControlState;
     }
     default:
       return state;
